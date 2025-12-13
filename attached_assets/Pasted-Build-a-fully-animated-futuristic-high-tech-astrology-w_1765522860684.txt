@@ -1,0 +1,63 @@
+Build a fully animated, futuristic, high-tech astrology website named “Astrocharm”. 
+The design should look premium, modern, 3D–inspired and visually stunning. 
+Use Vite + React for frontend, Node + Express for backend. 
+
+### UI/UX Requirements:
+- Use a dark cosmic theme with neon gradients (purple/blue/gold).
+- Add smooth parallax animations, glassmorphism cards, glowing borders, particle background effects, and soft 3D shadows.
+- Homepage should feel high-tech like an AI dashboard + astrology fusion.
+- Use Framer Motion for animations: fade-in, slide-up, zoom, staggered transitions.
+- Use Lottie animations where needed (stars, zodiac wheel, loading effects).
+- Navbar must be sticky, glassy, and animated.
+- Buttons should glow on hover and have micro-interactions.
+- Add a dynamic particle starfield background (canvas or tsParticles).
+- Typography should feel premium — elegant serif + futuristic sans.
+
+### Pages to Generate:
+1. **Home Page**
+   - Hero section with animated zodiac ring, tagline, and CTA buttons.
+   - Floating cards for Kundli, Horoscope, Tarot, Matchmaking.
+   - Animated astrologer carousel.
+   - Parallax “Why Astrocharm?” section with icons that glow on hover.
+   - Testimonials slider with smooth 3D transitions.
+
+2. **Kundli Page**
+   - Beautiful form with date/time/place inputs.
+   - Animated moon/planet orbit illustration.
+   - On submit → loading animation → show generated Kundli card UI.
+
+3. **Horoscope Page**
+   - 12 zodiac icons with hover animation.
+   - Dynamic content section with fade/slide transitions.
+
+4. **Astrologer Page**
+   - Modern card grid with neon glow borders.
+   - Live status (Online/Busy/Offline) with animated indicators.
+
+5. **About Page**
+   - Storyline scroll animation.
+   - Galaxy-themed timeline.
+
+### Component Requirements:
+- Reusable components: AnimatedCard, GlowingButton, StarBackground, FloatingIcons.
+- All components must be clean, modular and professional.
+
+### Backend:
+- Node + Express project.
+- Route: POST /api/kundli → return mock Kundli JSON.
+- Route: GET /api/horoscope/:sign → return mock horoscope text.
+- Add CORS + rate limiting + logging middleware.
+
+### Project Setup:
+- Create a client/ and server/ folder.
+- Use concurrently to run both.
+- Add a clear README containing run instructions.
+- Add .replit file to auto-run `npm run dev`.
+
+### Design Goal:
+Make the website look like:
+- A futuristic AI-powered astrology system
+- High-motion, premium-quality UI
+- Clean, smooth and professional — like a top-level commercial product
+
+Make all code production-ready and well-commented.
