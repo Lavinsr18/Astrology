@@ -91,78 +91,116 @@ export default function Shop() {
         </div>
 
         {/* Product Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.05 }}
+     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  {filteredProducts.map((product, index) => (
+    <motion.div
+      key={product.id}
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.05 }}
+    >
+      {/* FULL CARD CLICKABLE */}
+      <Link href={`/product/${product.id}`} className="block h-full">
+        <AnimatedCard
+          className="
+            h-full flex flex-col p-0 overflow-hidden
+            group border-white/5 hover:border-primary/50
+            transition-all duration-300
+            active:scale-[0.97] md:active:scale-100
+          "
+        >
+          {/* IMAGE */}
+          <div className="relative aspect-square overflow-hidden bg-black/20">
+            <img
+              src={getProductImage(product.image)}
+              alt={product.name}
+              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            />
+
+            {/* DISCOUNT */}
+            <div className="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-2 py-1 rounded shadow-lg">
+              {Math.round(
+                ((product.originalPrice - product.price) /
+                  product.originalPrice) *
+                  100
+              )}
+              % OFF
+            </div>
+
+            {/* ZODIAC */}
+            {product.category === "zodiac" && (
+              <div className="absolute top-3 right-3 bg-accent text-black text-xs font-bold px-2 py-1 rounded shadow-lg flex items-center gap-1">
+                <Sparkles className="w-3 h-3" /> ZODIAC
+              </div>
+            )}
+
+            {/* CTA – MOBILE ALWAYS VISIBLE */}
+            <div
+              className="
+                absolute bottom-0 left-0 right-0 p-4
+                bg-gradient-to-t from-black/90 to-transparent
+                translate-y-0 md:translate-y-full
+                md:group-hover:translate-y-0
+                transition-transform duration-300
+              "
             >
-              <AnimatedCard className="h-full flex flex-col p-0 overflow-hidden group border-white/5 hover:border-primary/50 transition-colors">
-                <div className="relative aspect-square overflow-hidden bg-black/20">
-                  <img 
-                    src={getProductImage(product.image)} 
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  
-                  {/* Overlay Badges */}
-                  <div className="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-2 py-1 rounded shadow-lg">
-                    {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
-                  </div>
-                  
-                  {product.category === "zodiac" && (
-                    <div className="absolute top-3 right-3 bg-accent text-black text-xs font-bold px-2 py-1 rounded shadow-lg flex items-center gap-1">
-                      <Sparkles className="w-3 h-3" /> ZODIAC
-                    </div>
-                  )}
+              <div className="pointer-events-none md:pointer-events-auto">
+                <GlowingButton size="sm" className="w-full">
+                  View Product
+                </GlowingButton>
+              </div>
+            </div>
+          </div>
 
-                  {/* Quick Add Button */}
-                  <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/90 to-transparent">
-                   <Link href={`/product/${product.id}`}>
-  <GlowingButton size="sm" className="w-full">
-    View Product
-  </GlowingButton>
-</Link>
+          {/* CONTENT */}
+          <div className="p-5 flex flex-col flex-grow">
+            <h3 className="text-lg font-display font-bold text-white mb-2">
+              {product.name}
+            </h3>
 
-                  </div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex text-accent">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-3 h-3 fill-accent" />
+                ))}
+              </div>
+              <span className="text-xs text-muted-foreground">(42 reviews)</span>
+            </div>
+
+            <p className="text-sm text-white/70 mb-4 line-clamp-2 flex-grow font-tech">
+              {product.use} • {product.stones}
+            </p>
+
+            {/* PRICE + WISHLIST */}
+            <div className="flex items-center justify-between pt-4 border-t border-white/10">
+              <div>
+                <span className="text-xs text-muted-foreground line-through">
+                  ₹{product.originalPrice}
+                </span>
+                <div className="text-xl font-bold text-primary">
+                  ₹{product.price}
                 </div>
+              </div>
 
-                <div className="p-5 flex flex-col flex-grow">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-display font-bold text-white leading-tight">{product.name}</h3>
-                  </div>
-                  
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex text-accent">
-                      <Star className="w-3 h-3 fill-accent" />
-                      <Star className="w-3 h-3 fill-accent" />
-                      <Star className="w-3 h-3 fill-accent" />
-                      <Star className="w-3 h-3 fill-accent" />
-                      <Star className="w-3 h-3 fill-accent" />
-                    </div>
-                    <span className="text-xs text-muted-foreground">(42 reviews)</span>
-                  </div>
+              {/* HEART BUTTON – CLICK SAFE */}
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  // wishlist logic here
+                }}
+                className="p-2 rounded-full bg-white/5 hover:bg-primary/20 text-white hover:text-primary transition"
+              >
+                <Heart className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        </AnimatedCard>
+      </Link>
+    </motion.div>
+  ))}
+</div>
 
-                  <p className="text-sm text-white/70 mb-4 line-clamp-2 flex-grow font-tech">
-                    {product.use} • {product.stones}
-                  </p>
-
-                  <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-                    <div className="flex flex-col">
-                      <span className="text-xs text-muted-foreground line-through">₹{product.originalPrice}</span>
-                      <span className="text-xl font-bold text-primary">₹{product.price}</span>
-                    </div>
-                    <button className="p-2 rounded-full bg-white/5 hover:bg-primary/20 text-white hover:text-primary transition-colors">
-                      <Heart className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              </AnimatedCard>
-            </motion.div>
-          ))}
-        </div>
       </div>
     </div>
   );

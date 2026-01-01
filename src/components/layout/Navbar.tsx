@@ -33,17 +33,35 @@ export default function Navbar() {
       )}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group cursor-pointer">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            >
-              <Star className="w-8 h-8 text-primary fill-primary" />
-            </motion.div>
-            <span className="text-2xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-white to-accent">
-              ASTROCHARM
-            </span>
-        </Link>
+        <Link href="/" className="flex items-center gap-3 group cursor-pointer">
+  {/* LOGO IMAGE */}
+  <motion.img
+    src="/logo.png"
+    alt="AstroCharm Logo"
+    className="w-10 h-10 object-contain"
+    initial={{ rotate: -10 }}
+    animate={{ rotate: 10 }}
+    transition={{
+      repeat: Infinity,
+      repeatType: "mirror",
+      duration: 6,
+      ease: "easeInOut",
+    }}
+  />
+
+  {/* BRAND TEXT */}
+  <span
+    className="
+      text-2xl font-display font-bold tracking-wider
+      bg-clip-text text-transparent
+      bg-gradient-to-r
+      from-[#f6c453] via-[#ff914d] to-[#5b6cff]
+    "
+  >
+    ASTROCHARM
+  </span>
+</Link>
+
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8">
@@ -59,9 +77,13 @@ export default function Navbar() {
                 )} />
             </Link>
           ))}
-          <button className="px-6 py-2 rounded-full border border-primary/50 text-primary font-display text-sm font-bold hover:bg-primary hover:text-white transition-all duration-300">
-            LOGIN
-          </button>
+          <Link
+  href="/login"
+  className="px-6 py-2 rounded-full border border-primary/50 text-primary font-display text-sm font-bold hover:bg-primary hover:text-white transition-all duration-300"
+>
+  LOGIN
+</Link>
+
         </div>
 
         {/* Mobile Menu Button */}

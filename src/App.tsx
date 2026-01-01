@@ -13,6 +13,7 @@ import ProductView from "./pages/ProductView"
 import Footer  from "./pages/Footer"; 
 import Zodaic from "./pages/zodaic";
 import Astrologer from "./pages/Astrologer";
+import Login from "./pages/login"
 
 function Router() {
   return (
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/product/:id" component={ProductView} />
       <Route path="/zodaic" component={Zodaic} />
       <Route path="/astrologer" component={Astrologer} />
+       <Route path="/login" component={Login}/>
       <Route component={NotFound} />
     </Switch>
   );
