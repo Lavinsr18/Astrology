@@ -12,10 +12,11 @@ export default function Navbar() {
   const links = [
     { href: "/", label: "Home" },
     { href: "/kundli", label: "Kundli" },
-    { href: "/horoscope", label: "Horoscope" },
-    { href: "/astrologer", label: "Astrologers" },
+    { href: "/zodaic", label: "Zodaic" },
+    { href: "/astrologer", label: "Astrologer" },
     { href: "/shop", label: "Shop" },
     { href: "/about", label: "About" },
+    { href: "/Contact", label: "Contact" },
   ];
 
   useEffect(() => {

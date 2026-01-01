@@ -150,7 +150,7 @@ export default function Footer() {
           </p>
 
           <p>
-           ✨Design & Developed by BitaBox Technology
+           ✨Design & Developed by Lavinsh Rathore
           </p>
         </div>
       </div>
