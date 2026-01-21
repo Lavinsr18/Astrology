@@ -1,14 +1,11 @@
 import { useParams, Link } from "wouter";
 import { motion } from "framer-motion";
-import { useState } from "react";
-import { PRODUCT_CONTENT } from "../lib/product-content";
+import { useState, useEffect } from "react";
 import StarBackground from "../components/ui/StarBackground";
 import GlowingButton from "../components/ui/GlowingButton";
-import { PRODUCTS, ZODIAC_BRACELETS } from "../lib/products-data";
 import { RefreshCcw, Truck, BadgeCheck, CreditCard, ChevronDown } from "lucide-react";
 import { PRODUCT_FAQ } from "../lib/product-faq";
-
-
+import { ENV } from "../config/env";
 import {
   Star,
   ShoppingBag,
@@ -22,22 +19,8 @@ import {
   X,
 } from "lucide-react";
 
-// images
-import dhanYogImg from "../../attached_assets/generated_images/mixed_crystal_wealth_bracelet.png";
-import roseQuartzImg from "../../attached_assets/generated_images/rose_quartz_love_bracelet.png";
-import amethystImg from "../../attached_assets/generated_images/amethyst_stress_relief_bracelet.png";
-import tigerEyeImg from "../../attached_assets/generated_images/tiger_eye_focus_bracelet.png";
-import chakraImg from "../../attached_assets/generated_images/7_chakra_balance_bracelet.png";
-import moonStoneImg from "../../attached_assets/generated_images/moonstone_intuition_bracelet.png";
-
-const imageMap: Record<string, string> = {
-  "dhan-yog": dhanYogImg,
-  "money-magnet": dhanYogImg,
-  "rose-quartz": roseQuartzImg,
-  "amethyst": amethystImg,
-  "tiger-eye": tigerEyeImg,
-  "7-chakra": chakraImg,
-  "moon-stone": moonStoneImg,
+type BenefitItem = {
+  text: string;
 };
 
 function FAQItem({
@@ -82,37 +65,196 @@ function FAQItem({
 }
 
 
-const getProductImage = (key: string) => imageMap[key] || moonStoneImg;
-
 export default function ProductView() {
-const { id } = useParams<{ id: string }>();
+    const { id } = useParams<{ id: string }>();
+  const [product, setProduct] = useState<any>(null);
+  const [quantity, setQuantity] = useState(1); // ✅ YAHAN
+   const [showForm, setShowForm] = useState(false);
+const [orderSuccess, setOrderSuccess] = useState(false);
+const [formError, setFormError] = useState("");
 
-  const [showForm, setShowForm] = useState(false);
-  const [orderSuccess, setOrderSuccess] = useState(false);
+const availableStock =
+  product ? product.totalStock - product.soldStock : 0;
 
-const product = [...PRODUCTS, ...ZODIAC_BRACELETS].find(
-  (p) => p.id === id
-);
+
+  const BENEFIT_ICONS = [
+  Sparkles,
+  HeartHandshake,
+  ShieldCheck,
+  Zap,
+  Star,
+];
+
+
+
+useEffect(() => {
+  fetch(`${ENV.API_BASE_URL}/api/products/${id}`)
+    .then(res => res.json())
+    .then(setProduct);
+}, [id]);
+
+const totalAmount = product ? product.price * quantity : 0;
+
+
+//   const handleConfirmPurchase = async () => {
+//   try {
+//     const res = await fetch(`${ENV.API_BASE_URL}/api/order/create`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         product,
+//         customer,
+//       }),
+//     });
+
+//     const data = await res.json();
+
+//     const options = {
+//       key: data.key,
+//       amount: data.amount * 100,
+//       currency: "INR",
+//       name: "AstroCharm",
+//       description: product.name,
+//       order_id: data.orderId,
+
+//       handler: function () {
+//         setShowForm(false);
+//         setOrderSuccess(true);
+//       },
+
+//     prefill: {
+//   name: `${customer.firstName} ${customer.lastName}`,
+//   email: customer.email,
+//   contact: customer.phone,
+// },
+
+
+//       theme: { color: "#7c3aed" },
+//     };
+
+//     const razorpay = new (window as any).Razorpay(options);
+//     razorpay.open();
+
+//   } catch (err) {
+//     alert("Payment failed. Try again.");
+//   }
+// };
+
+const handleConfirmPurchase = async () => {
+  if (!isCustomerValid()) {
+    setFormError("Please fill all required fields correctly");
+    return;
+  }
+
+  setFormError("");
+
+  try {
+    const res = await fetch(`${ENV.API_BASE_URL}/api/order/create`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        product,
+        customer,
+        quantity,
+      }),
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    const options = {
+      key: data.key,
+      amount: data.amount * 100,
+      currency: "INR",
+      name: "AstroCharm",
+      description: product.name,
+      order_id: data.orderId,
+
+      handler: async function (response: any) {
+        await fetch(`${ENV.API_BASE_URL}/api/order/verify`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(response),
+        });
+
+        setShowForm(false);
+        setOrderSuccess(true);
+      },
+
+      prefill: {
+        name: `${customer.firstName} ${customer.lastName}`,
+        email: customer.email,
+        contact: customer.phone,
+      },
+
+      theme: { color: "#7c3aed" },
+    };
+
+    const razorpay = new (window as any).Razorpay(options);
+    razorpay.open();
+  } catch {
+    alert("Payment failed");
+  }
+};
+
+
+
+const [customer, setCustomer] = useState({
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  addressLine1: "",
+  addressLine2: "",
+  city: "",
+  state: "",
+  pincode: "",
+  country: "India",
+});
+
+const requiredFields = [
+  "firstName",
+  "lastName",
+  "email",
+  "phone",
+  "addressLine1",
+  "city",
+  "state",
+  "pincode",
+];
+
+const isCustomerValid = () => {
+  for (const field of requiredFields) {
+    if (!customer[field as keyof typeof customer]?.trim()) {
+      return false;
+    }
+  }
+
+  // extra validations
+  if (!/^\d{10}$/.test(customer.phone)) return false;
+  if (!/^\d{6}$/.test(customer.pincode)) return false;
+  if (!/^\S+@\S+\.\S+$/.test(customer.email)) return false;
+
+  return true;
+};
+
+
 
 if (!product) {
-  return <div className="text-white text-center pt-40">Product not found</div>;
+  return <div className="text-white text-center pt-40">Loading...</div>;
+  
 }
 
-const relatedProducts = [...PRODUCTS, ...ZODIAC_BRACELETS]
-  .filter(
-    (p) =>
-      p.category === product.category &&
-      p.id !== product.id
-  )
-  .slice(0, 4);
-
-
-
-const content = PRODUCT_CONTENT[product.id] ?? {
+const content: {
+  benefits: BenefitItem[];
+  why: string;
+  who: string[];
+} = product.content || {
   benefits: [],
   why: "",
   who: [],
 };
+
 
   return (
     <div className="min-h-screen pt-24 pb-32 relative overflow-hidden">
@@ -141,11 +283,8 @@ const content = PRODUCT_CONTENT[product.id] ?? {
             className="relative"
           >
             <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-            <img
-              src={getProductImage(product.image)}
-              alt={product.name}
-              className="relative rounded-3xl border border-white/10 shadow-2xl mx-auto"
-            />
+            <img src={product.image} alt={product.name} />
+
 
             <span className="absolute top-4 left-4 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
               {Math.round(
@@ -194,22 +333,63 @@ const content = PRODUCT_CONTENT[product.id] ?? {
             {/* Price */}
             <div className="flex items-center gap-4 mb-8">
               <span className="text-3xl font-bold text-primary">
-                ₹{product.price}
+                
+               ₹{totalAmount}
               </span>
               <span className="line-through text-muted-foreground">
                 ₹{product.originalPrice}
               </span>
             </div>
 
+          {/* STOCK INFO */}
+<p className="text-sm text-white/70 mb-2">
+  {availableStock > 0 ? (
+    <>Only <b>{availableStock}</b> left in stock</>
+  ) : (
+    <span className="text-red-500 font-semibold">Out of Stock</span>
+  )}
+</p>
+
+{/* QUANTITY SELECTOR */}
+<div className="flex items-center gap-4 mb-6">
+  <span className="text-white font-medium">Quantity</span>
+
+  <div className="flex items-center border border-white/10 rounded-lg">
+    <button
+      className="px-3 py-2 text-white hover:bg-white/10 disabled:opacity-40"
+      onClick={() => setQuantity(q => Math.max(1, q - 1))}
+      disabled={availableStock === 0}
+    >
+      −
+    </button>
+
+    <span className="px-4 py-2 min-w-[40px] text-center text-white">
+      {quantity}
+    </span>
+
+    <button
+      className="px-3 py-2 text-white hover:bg-white/10 disabled:opacity-40"
+      onClick={() =>
+        setQuantity(q => Math.min(q + 1, availableStock))
+      }
+      disabled={availableStock === 0}
+    >
+      +
+    </button>
+  </div>
+</div>
+
             {/* CTA */}
             <div className="flex flex-wrap gap-4">
-              <GlowingButton
-                size="lg"
-                icon={<ShoppingBag />}
-                onClick={() => setShowForm(true)}
-              >
-                Buy Now
-              </GlowingButton>
+             <GlowingButton
+  size="lg"
+  icon={<ShoppingBag />}
+  onClick={() => setShowForm(true)}
+  disabled={availableStock === 0}
+>
+  Buy Now
+</GlowingButton>
+
 
               <Link href="/shop">
                 <GlowingButton size="lg" variant="outline">
@@ -220,7 +400,7 @@ const content = PRODUCT_CONTENT[product.id] ?? {
           </motion.div>
         </div>
 
-{/* ================= ASSURANCE STRIP ================= */}
+      {/* ================= ASSURANCE STRIP ================= */}
 <motion.section
   initial={{ opacity: 0, y: 30 }}
   whileInView={{ opacity: 1, y: 0 }}
@@ -313,17 +493,30 @@ const content = PRODUCT_CONTENT[product.id] ?? {
             Key Benefits
           </h3>
 
-          <ul className="space-y-3">
-            {content.benefits.map((item, i) => (
-              <li
-                key={i}
-                className="flex items-start gap-3 text-white/80 text-sm"
-              >
-                <item.icon className="w-5 h-5 text-primary mt-0.5" />
-                {item.text}
-              </li>
-            ))}
-          </ul>
+          <ul className="space-y-2">
+  {content.benefits.map((item, i) => {
+    const Icon = BENEFIT_ICONS[i % BENEFIT_ICONS.length];
+
+    return (
+      <li
+        key={i}
+        className="flex items-start gap-6 "
+      >
+        <div
+          className="w-11 h-7 flex items-center justify-center rounded-full
+                     bg-primary/20 text-primary shrink-0"
+        >
+          <Icon className="w-5 h-5" />
+        </div>
+
+        <p className="text-sm text-white/80 leading-relaxed">
+          {item.text}
+        </p>
+      </li>
+    );
+  })}
+</ul>
+
         </motion.div>
       )}
 
@@ -423,7 +616,7 @@ const content = PRODUCT_CONTENT[product.id] ?? {
 </section>
 
 {/* ================= RELATED PRODUCTS ================= */}
-{relatedProducts.length > 0 && (
+{/* {relatedProducts.length > 0 && (
   <section className="mt-28">
     <motion.h2
       initial={{ opacity: 0, y: 20 }}
@@ -450,17 +643,17 @@ const content = PRODUCT_CONTENT[product.id] ?? {
             <a className="block group">
 
               {/* IMAGE */}
-              <div className="relative aspect-square overflow-hidden">
+              {/* <div className="relative aspect-square overflow-hidden">
                 <img
                   src={getProductImage(item.image)}
                   alt={item.name}
                   className="w-full h-full object-cover transition-transform duration-700
                              group-hover:scale-110"
-                />
-              </div>
+                /> 
+              </div> */}
 
               {/* CONTENT */}
-              <div className="p-4">
+              {/* <div className="p-4">
                 <h3 className="text-white font-semibold mb-1 line-clamp-1">
                   {item.name}
                 </h3>
@@ -485,56 +678,137 @@ const content = PRODUCT_CONTENT[product.id] ?? {
       ))}
     </div>
   </section>
-)}
+)} */}
 
       </div>
 
       {/* ================= PURCHASE MODAL ================= */}
-      {showForm && !orderSuccess && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-xl"
-        >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            className="relative w-full max-w-lg bg-black/60 border border-white/10 rounded-3xl p-8"
-          >
-            <button
-              onClick={() => setShowForm(false)}
-              className="absolute top-4 right-4 text-muted-foreground hover:text-white"
-            >
-              <X />
-            </button>
+     {showForm && !orderSuccess && (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xl flex items-center justify-center px-4"
+  >
+    <motion.div
+      initial={{ scale: 0.9, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      className="relative w-full max-w-2xl bg-black/60 border border-white/10 rounded-3xl p-8"
+    >
+      {/* CLOSE */}
+      <button
+        onClick={() => setShowForm(false)}
+        className="absolute top-4 right-4 text-white/60 hover:text-white"
+      >
+        <X />
+      </button>
 
-            <h2 className="text-3xl font-display font-bold text-white mb-6">
-              Complete Your Purchase
-            </h2>
+      <h2 className="text-3xl font-display font-bold text-white mb-6">
+        Checkout
+      </h2>
 
-            <div className="space-y-4">
-              <input className="w-full input" placeholder="Full Name" />
-              <input className="w-full input" placeholder="Email Address" />
-              <input className="w-full input" placeholder="Phone Number" />
-              <textarea className="w-full input" rows={3} placeholder="Delivery Address" />
+      {/* FORM */}
+      <div className="space-y-5">
 
-              <div className="flex justify-between items-center pt-4">
-                <span className="text-lg text-white">
-                  Total: <strong className="text-primary">₹{product.price}</strong>
-                </span>
-                <GlowingButton
-                  onClick={() => {
-                    setShowForm(false);
-                    setOrderSuccess(true);
-                  }}
-                >
-                  Confirm Purchase
-                </GlowingButton>
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      )}
+        {/* NAME */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            className="input"
+            placeholder="First Name"
+            value={customer.firstName}
+            onChange={e => setCustomer({ ...customer, firstName: e.target.value })}
+          />
+          <input
+            className="input"
+            placeholder="Last Name"
+            value={customer.lastName}
+            onChange={e => setCustomer({ ...customer, lastName: e.target.value })}
+          />
+        </div>
+
+        {/* CONTACT */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            className="input"
+            placeholder="Email Address"
+            value={customer.email}
+            onChange={e => setCustomer({ ...customer, email: e.target.value })}
+          />
+          <input
+            className="input"
+            placeholder="Phone Number"
+            value={customer.phone}
+            onChange={e => setCustomer({ ...customer, phone: e.target.value })}
+          />
+        </div>
+
+        {/* ADDRESS */}
+        <input
+          className="input"
+          placeholder="Address Line 1 (House No, Street)"
+          value={customer.addressLine1}
+          onChange={e => setCustomer({ ...customer, addressLine1: e.target.value })}
+        />
+
+        <input
+          className="input"
+          placeholder="Address Line 2 (Landmark, Area)"
+          value={customer.addressLine2}
+          onChange={e => setCustomer({ ...customer, addressLine2: e.target.value })}
+        />
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <input
+            className="input"
+            placeholder="City"
+            value={customer.city}
+            onChange={e => setCustomer({ ...customer, city: e.target.value })}
+          />
+          <input
+            className="input"
+            placeholder="State"
+            value={customer.state}
+            onChange={e => setCustomer({ ...customer, state: e.target.value })}
+          />
+          <input
+            className="input"
+            placeholder="Pincode"
+            value={customer.pincode}
+            onChange={e => setCustomer({ ...customer, pincode: e.target.value })}
+          />
+        </div>
+
+        {/* ORDER SUMMARY */}
+        <div className="flex justify-between items-center border-t border-white/10 pt-4">
+          <span className="text-white text-lg">
+            Total Amount
+          </span>
+          <span className="text-primary text-2xl font-bold">
+            ₹{totalAmount}
+          </span>
+        </div>
+
+        {formError && (
+  <p className="text-red-400 text-sm text-center">
+    {formError}
+  </p>
+)}
+
+
+        {/* PAY */}
+       <GlowingButton
+  className="w-full"
+  onClick={handleConfirmPurchase}
+  disabled={!isCustomerValid()}
+>
+  Pay ₹{totalAmount}
+</GlowingButton>
+
+      </div>
+    </motion.div>
+  </motion.div>
+)}
+
+      
 
       {/* ================= SUCCESS ================= */}
       {orderSuccess && (

@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import StarBackground from "../components/ui/StarBackground";
 import GlowingButton from "../components/ui/GlowingButton";
 import {
@@ -9,7 +10,32 @@ import {
   Send,
 } from "lucide-react";
 
+import { ENV } from "../config/env";
+
 export default function Contact() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const submit = async (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+
+    await fetch(`${ENV.API_BASE_URL}/api/queries`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    setLoading(false);
+    alert("Message sent successfully ✨");
+    setForm({ name: "", email: "", phone: "", message: "" });
+  };
   return (
     <div className="min-h-screen pt-24 pb-32 relative overflow-hidden">
       <StarBackground />
@@ -97,50 +123,57 @@ export default function Contact() {
 
           {/* ========== RIGHT : CONTACT FORM ========== */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="glass-card p-8 rounded-3xl border border-white/10 bg-black/40"
-          >
-            <h2 className="text-2xl font-display font-bold text-white mb-6">
-              Send Us a Message
-            </h2>
+          initial={{ opacity: 0, x: 40 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="glass-card p-8 rounded-3xl border border-white/10 bg-black/40"
+        >
+          <h2 className="text-2xl font-bold text-white mb-6">
+            Send Us a Message
+          </h2>
 
-            <form className="space-y-5">
-              <input
-                type="text"
-                placeholder="Full Name"
-                className="w-full input"
-              />
+          <form onSubmit={submit} className="space-y-4">
+            <input
+              className="input w-full"
+              placeholder="Full Name"
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              required
+            />
 
-              <input
-                type="email"
-                placeholder="Email Address"
-                className="w-full input"
-              />
+            <input
+              className="input w-full"
+              placeholder="Email"
+              value={form.email}
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              required
+            />
 
-              <input
-                type="tel"
-                placeholder="Phone Number"
-                className="w-full input"
-              />
+            <input
+              className="input w-full"
+              placeholder="Phone"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            />
 
-              <textarea
-                rows={4}
-                placeholder="Your Message"
-                className="w-full input"
-              />
+            <textarea
+              className="input w-full"
+              rows={4}
+              placeholder="Your Message"
+              value={form.message}
+              onChange={(e) => setForm({ ...form, message: e.target.value })}
+              required
+            />
 
-              <GlowingButton
-                size="lg"
-                icon={<Send className="w-4 h-4" />}
-                className="w-full"
-              >
-                Send Message
-              </GlowingButton>
-            </form>
-          </motion.div>
+            <GlowingButton
+              type="submit"
+              icon={<Send className="w-4 h-4" />}
+              className="w-full"
+              disabled={loading}
+            >
+              {loading ? "Sending..." : "Send Message"}
+            </GlowingButton>
+          </form>
+        </motion.div>
         </div>
       </div>
     </div>

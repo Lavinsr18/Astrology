@@ -6,34 +6,22 @@ import AnimatedCard from "../components/ui/AnimatedCard";
 import AstrologerCard from "../components/ui/AstrologerCard";
 import { ASTROLOGERS, TESTIMONIALS } from "../lib/astrology-data";
 import zodiacWheel from "../../attached_assets/generated_images/3d_gold_zodiac_wheel.png";
-import heroBg from "../../attached_assets/generated_images/cosmic_nebula_background_with_purple_and_gold_neon_gradients.png";
 import tarotImg from "../../attached_assets/generated_images/mystical_tarot_cards_3d.png";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
-import { PRODUCTS, ZODIAC_BRACELETS } from "../lib/products-data";
-
-// images (same mapping logic as shop)
-import dhanYogImg from "../../attached_assets/generated_images/mixed_crystal_wealth_bracelet.png";
-import roseQuartzImg from "../../attached_assets/generated_images/rose_quartz_love_bracelet.png";
-import amethystImg from "../../attached_assets/generated_images/amethyst_stress_relief_bracelet.png";
-import tigerEyeImg from "../../attached_assets/generated_images/tiger_eye_focus_bracelet.png";
-import chakraImg from "../../attached_assets/generated_images/7_chakra_balance_bracelet.png";
-import moonStoneImg from "../../attached_assets/generated_images/moonstone_intuition_bracelet.png";
-
-const imageMap: Record<string, string> = {
-  "dhan-yog": dhanYogImg,
-  "money-magnet": dhanYogImg,
-  "rose-quartz": roseQuartzImg,
-  "amethyst": amethystImg,
-  "tiger-eye": tigerEyeImg,
-  "7-chakra": chakraImg,
-  "moon-stone": moonStoneImg,
-};
-
-const getProductImage = (key: string) => imageMap[key] || moonStoneImg;
+import { ENV } from "../config/env";
 
 
 
 export default function Home() {
+  const [featured, setFeatured] = useState<any[]>([]);
+
+useEffect(() => {
+  fetch(`${ENV.API_BASE_URL}/api/products`)
+    .then(res => res.json())
+    .then(data => setFeatured(data.slice(0, 4))); // sirf 4 products
+}, []);
+
   return (
     <div className="min-h-screen relative overflow-hidden">
       <StarBackground />
@@ -170,133 +158,89 @@ export default function Home() {
         </div>
       </section>
 
-   {/* Shop Bracelets (Same UI as Shop Page) */}
-<section className="py-20 relative z-10">
+      {/* ================= FEATURED PRODUCTS ================= */}
+<section className="py-24 relative z-10">
   <div className="container mx-auto px-6">
-    <div className="flex justify-between items-end mb-12">
+
+    {/* HEADER */}
+    <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
       <div>
         <h2 className="text-3xl md:text-5xl font-display font-bold text-white mb-2">
-          SHOP BRACELETS
+          Featured Products
         </h2>
-        <p className="text-muted-foreground">
-          Energized crystal bracelets for wealth, love & protection.
+        <p className="text-muted-foreground max-w-xl">
+          Handcrafted crystal bracelets energized for wealth, love & protection.
         </p>
       </div>
-    </div>
 
-    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {[...PRODUCTS, ...ZODIAC_BRACELETS].slice(0, 4).map((product, index) => (
-        <motion.div
-          key={product.id}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: index * 0.1 }}
-        >
-          <AnimatedCard className="h-full flex flex-col p-0 overflow-hidden group border-white/5 hover:border-primary/50 transition-colors">
-            
-            {/* Image */}
-            <div className="relative aspect-square overflow-hidden bg-black/20">
-              <img
-                src={getProductImage(product.image)}
-                alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-
-              {/* Discount */}
-              <div className="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-2 py-1 rounded shadow-lg">
-                {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
-              </div>
-
-              {/* Zodiac Badge */}
-              {product.category === "zodiac" && (
-                <div className="absolute top-3 right-3 bg-accent text-black text-xs font-bold px-2 py-1 rounded shadow-lg flex items-center gap-1">
-                  <Sparkles className="w-3 h-3" /> ZODIAC
-                </div>
-              )}
-
-              {/* Hover CTA */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-black/90 to-transparent">
-                <Link href={`/product/${product.id}`}>
-  <GlowingButton size="sm" className="w-full">
-   View Product
-  </GlowingButton>
-</Link>
-              </div>
-            </div>
-
-            {/* Content */}
-            <div className="p-5 flex flex-col flex-grow">
-              <h3 className="text-lg font-display font-bold text-white mb-2">
-                {product.name}
-              </h3>
-
-              <div className="flex items-center gap-2 mb-3">
-                <div className="flex text-accent">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-accent" />
-                  ))}
-                </div>
-                <span className="text-xs text-muted-foreground">(42 reviews)</span>
-              </div>
-
-              <p className="text-sm text-white/70 mb-4 line-clamp-2 flex-grow font-tech">
-                {product.use} • {product.stones}
-              </p>
-
-              <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-                <div>
-                  <span className="text-xs text-muted-foreground line-through">
-                    ₹{product.originalPrice}
-                  </span>
-                  <span className="block text-xl font-bold text-primary">
-                    ₹{product.price}
-                  </span>
-                </div>
-
-                <button className="p-2 rounded-full bg-white/5 hover:bg-primary/20 text-white hover:text-primary transition-colors">
-                  <Heart className="w-5 h-5" />
-                </button>
-              </div>
-            </div>
-
-          </AnimatedCard>
-        </motion.div>
-      ))}
-    </div>
-
-    {/* Center Bottom Shop More CTA */}
-<div className="mt-8 flex justify-center">
-  <Link href="/shop">
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.97 }}
-      className="relative group"
-    >
-      {/* Glow Ring */}
-      <div className="absolute inset-0 rounded-full blur-2xl bg-primary/40 group-hover:bg-primary/60 transition-all duration-500" />
-
-      {/* Button */}
-      <button className="relative flex items-center gap-4 px-10 py-5 rounded-full bg-gradient-to-r from-primary via-purple-500 to-accent text-white font-display font-bold text-lg shadow-[0_0_40px_rgba(147,51,234,0.6)] border border-white/20 backdrop-blur-md">
-        <ShoppingBag className="w-3 h-3" />
-        Explore Full Shop
-        <ArrowRight className="w-3 h-3" />
-      </button>
-    </motion.div>
-  </Link>
-</div>
-
-
-    {/* Mobile CTA */}
-    <div className="mt-10 flex justify-center md:hidden">
       <Link href="/shop">
-        <GlowingButton variant="secondary">
-          Shop More Bracelets
+        <GlowingButton
+          variant="outline"
+          className="mt-6 md:mt-0"
+          icon={<ArrowRight className="w-4 h-4" />}
+        >
+          Shop More
         </GlowingButton>
       </Link>
+    </div>
+
+    {/* PRODUCTS GRID */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {featured.map((product, i) => (
+        <motion.div
+          key={product._id}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: i * 0.1 }}
+        >
+          <Link href={`/product/${product._id}`}>
+            <AnimatedCard
+              className="group h-full p-0 overflow-hidden cursor-pointer
+                         border-white/10 hover:border-primary/50"
+            >
+              {/* IMAGE */}
+              <div className="relative aspect-square overflow-hidden bg-black/20">
+                <img
+                  src={product.image}
+                  alt={product.name}
+                  className="w-full h-full object-cover
+                             transition-transform duration-700
+                             group-hover:scale-110"
+                />
+
+                <div className="absolute bottom-0 left-0 right-0 p-4
+                                bg-gradient-to-t from-black/90 to-transparent">
+                  <GlowingButton size="sm" className="w-full">
+                    View Product
+                  </GlowingButton>
+                </div>
+              </div>
+
+              {/* CONTENT */}
+              <div className="p-5">
+                <h3 className="text-lg font-display font-bold text-white mb-1">
+                  {product.name}
+                </h3>
+
+                <p className="text-xs text-muted-foreground mb-3 line-clamp-1">
+                  {product.stones}
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-xl font-bold text-primary">
+                    ₹{product.price}
+                  </span>
+
+                  <span className="text-xs line-through text-muted-foreground">
+                    ₹{product.originalPrice}
+                  </span>
+                </div>
+              </div>
+            </AnimatedCard>
+          </Link>
+        </motion.div>
+      ))}
     </div>
   </div>
 </section>

@@ -1,7 +1,52 @@
+import { useState } from "react";
+import { useLocation } from "wouter";
 import StarBackground from "../components/ui/StarBackground";
+import { ENV } from "../config/env";
 
 
 export default function Login() {
+
+ const [, setLocation] = useLocation();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch(`${ENV.API_BASE_URL}/api/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Invalid credentials");
+        return;
+      }
+
+      // ✅ Backend connected here
+      localStorage.setItem("token", data.token);
+
+      // ✅ Redirect to dashboard
+      setLocation("/Dashboard");
+
+    } catch {
+      setError("Server not reachable");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#2b1055] via-[#0b163f] to-[#000814] px-4">
       <StarBackground />
@@ -18,25 +63,44 @@ export default function Login() {
         </p>
 
         {/* Form */}
-        <form className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-          <input
+              <input
             type="email"
             placeholder="Email Address"
-            className="w-full rounded-xl bg-white/15 px-4 py-3 text-sm placeholder-white/70 outline-none focus:ring-2 focus:ring-[#b88cff]"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="w-full rounded-xl bg-white/10 px-4 py-3 text-sm
+              placeholder-white/60 border border-white/10
+              focus:border-[#a78bfa] focus:ring-2 focus:ring-[#7c3aed]/40 outline-none"
           />
 
-          <input
+           <input
             type="password"
             placeholder="Password"
-            className="w-full rounded-xl bg-white/15 px-4 py-3 text-sm placeholder-white/70 outline-none focus:ring-2 focus:ring-[#b88cff]"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full rounded-xl bg-white/10 px-4 py-3 text-sm
+              placeholder-white/60 border border-white/10
+              focus:border-[#a78bfa] focus:ring-2 focus:ring-[#7c3aed]/40 outline-none"
           />
+
+          {error && (
+            <p className="text-xs text-red-400">{error}</p>
+          )}
 
           <button
             type="submit"
-            className="w-full rounded-xl py-3 font-semibold text-black bg-gradient-to-r from-[#e0b973] to-[#b88cff] hover:scale-[1.02] transition"
+            disabled={loading}
+            className="w-full rounded-xl py-3 font-semibold
+              text-[#1e1b4b]
+              bg-gradient-to-r from-[#e6c87a] to-[#c4a24f]
+              hover:brightness-110 hover:scale-[1.02]
+              transition disabled:opacity-60"
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </button>
 
         </form>

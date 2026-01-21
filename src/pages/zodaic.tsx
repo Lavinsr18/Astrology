@@ -3,7 +3,6 @@ import { ShoppingBag, Star, ShieldCheck, Heart, Sparkles, Filter, Search } from 
 import StarBackground from "../components/ui/StarBackground";
 import AnimatedCard from "../components/ui/AnimatedCard";
 import GlowingButton from "../components/ui/GlowingButton";
-import { ZODIAC_BRACELETS } from "../lib/zodaicdata";
 import { Link } from "wouter";
 import { useState } from "react";
 

@@ -3,44 +3,38 @@ import { ShoppingBag, Star, ShieldCheck, Heart, Sparkles, Filter, Search } from 
 import StarBackground from "../components/ui/StarBackground";
 import AnimatedCard from "../components/ui/AnimatedCard";
 import GlowingButton from "../components/ui/GlowingButton";
-import { PRODUCTS, ZODIAC_BRACELETS } from "../lib/products-data";
 import { Link } from "wouter";
-import { useState } from "react";
+import { useState , useEffect} from "react";
+import { ENV } from "../config/env";
 
-// Import images
-import dhanYogImg from "../../attached_assets/generated_images/mixed_crystal_wealth_bracelet.png";
-import roseQuartzImg from "../../attached_assets/generated_images/rose_quartz_love_bracelet.png";
-import amethystImg from "../../attached_assets/generated_images/amethyst_stress_relief_bracelet.png";
-import tigerEyeImg from "../../attached_assets/generated_images/tiger_eye_focus_bracelet.png";
-import chakraImg from "../../attached_assets/generated_images/7_chakra_balance_bracelet.png";
-import moonStoneImg from "../../attached_assets/generated_images/moonstone_intuition_bracelet.png";
 
-// Image mapping
-const imageMap: Record<string, string> = {
-  "dhan-yog": dhanYogImg,
-  "money-magnet": dhanYogImg, // Reusing similar look
-  "rose-quartz": roseQuartzImg,
-  "amethyst": amethystImg,
-  "tiger-eye": tigerEyeImg,
-  "7-chakra": chakraImg,
-  "moon-stone": moonStoneImg,
-};
-
-// Fallback image function
-const getProductImage = (imgKey: string) => imageMap[imgKey] || moonStoneImg;
 
 export default function Shop() {
   const [activeCategory, setActiveCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [products, setProducts] = useState<any[]>([]);
 
-  const allProducts = [...PRODUCTS, ...ZODIAC_BRACELETS];
 
-  const filteredProducts = allProducts.filter((product) => {
-    const matchesCategory = activeCategory === "all" || product.category === activeCategory;
-    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          product.stones.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+useEffect(() => {
+  fetch(`${ENV.API_BASE_URL}/api/products`)
+    .then(res => res.json())
+    .then(setProducts);
+}, []);
+
+
+const filteredProducts = products.filter((product) => {
+  const matchesCategory =
+    activeCategory === "all" || product.category === activeCategory;
+
+  const matchesSearch =
+    product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    product.stones.toLowerCase().includes(searchQuery.toLowerCase());
+
+  return matchesCategory && matchesSearch;
+});
+ 
+
+
 
   return (
     <div className="min-h-screen pt-24 pb-12 relative">
@@ -111,11 +105,21 @@ export default function Shop() {
         >
           {/* IMAGE */}
           <div className="relative aspect-square overflow-hidden bg-black/20">
-            <img
-              src={getProductImage(product.image)}
-              alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-            />
+          {product.totalStock - product.soldStock <= 5 &&
+ product.totalStock - product.soldStock > 0 && (
+  <div className="absolute bottom-3 left-3 bg-yellow-500 text-black text-xs px-2 py-1 rounded">
+    Only {product.totalStock - product.soldStock} left
+  </div>
+)}
+
+{product.totalStock - product.soldStock === 0 && (
+  <div className="absolute inset-0 bg-black/70 flex items-center justify-center text-white font-bold">
+    OUT OF STOCK
+  </div>
+)}
+
+           <img src={product.image} alt={product.name} />
+
 
             {/* DISCOUNT */}
             <div className="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-2 py-1 rounded shadow-lg">

@@ -1,29 +1,41 @@
 import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { cn } from "../../lib/utils";
+
 
 export default function Navbar() {
   const [location] = useLocation();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const links = [
     { href: "/", label: "Home" },
-    { href: "/kundli", label: "Kundli" },
-    { href: "/zodaic", label: "Zodaic" },
     { href: "/astrologer", label: "Astrologer" },
     { href: "/shop", label: "Shop" },
     { href: "/about", label: "About" },
     { href: "/Contact", label: "Contact" },
   ];
 
+  /* check login */
+  useEffect(() => {
+    setIsLoggedIn(localStorage.getItem("isLoggedIn") === "true");
+  }, []);
+
+  /* scroll effect */
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const logout = () => {
+    localStorage.removeItem("isLoggedIn");
+    setIsLoggedIn(false);
+    window.location.href = "/";
+  };
 
   return (
     <nav
@@ -33,60 +45,53 @@ export default function Navbar() {
       )}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-  {/* LOGO IMAGE */}
-  <motion.img
-    src="/logo.png"
-    alt="AstroCharm Logo"
-    className="w-10 h-10 object-contain"
-    initial={{ rotate: -10 }}
-    animate={{ rotate: 10 }}
-    transition={{
-      repeat: Infinity,
-      repeatType: "mirror",
-      duration: 6,
-      ease: "easeInOut",
-    }}
-  />
+        {/* LOGO */}
+        <Link href="/" className="flex items-center gap-3 cursor-pointer">
+          <motion.img
+            src="/logo.png"
+            alt="AstroCharm Logo"
+            className="w-10 h-10"
+          />
+          <span className="text-2xl font-display font-bold text-white">
+            AstroCharm
+          </span>
+        </Link>
 
-  {/* BRAND TEXT */}
-  <span
-    className="
-      text-2xl font-display font-bold tracking-wider
-      bg-clip-text text-transparent
-      bg-gradient-to-r
-      from-[#f6c453] via-[#ff914d] to-[#5b6cff]
-    "
-  >
-    ASTROCHARM
-  </span>
-</Link>
-
-
-        {/* Desktop Menu */}
+        {/* ================= DESKTOP MENU ================= */}
         <div className="hidden md:flex items-center gap-8">
           {links.map((link) => (
-            <Link key={link.href} href={link.href} className={cn(
-                  "font-tech text-lg uppercase tracking-wider hover:text-primary transition-colors relative group block",
-                  location === link.href ? "text-primary" : "text-white/80"
-                )}>
-                {link.label}
-                <span className={cn(
-                  "absolute -bottom-1 left-0 h-0.5 bg-primary transition-all duration-300",
-                  location === link.href ? "w-full" : "w-0 group-hover:w-full"
-                )} />
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "uppercase text-sm tracking-wider transition",
+                location === link.href
+                  ? "text-primary"
+                  : "text-white/80 hover:text-primary"
+              )}
+            >
+              {link.label}
             </Link>
           ))}
-          <Link
-  href="/login"
-  className="px-6 py-2 rounded-full border border-primary/50 text-primary font-display text-sm font-bold hover:bg-primary hover:text-white transition-all duration-300"
->
-  LOGIN
-</Link>
 
+          {!isLoggedIn ? (
+            <Link
+              href="/login"
+              className="px-6 py-2 rounded-full border border-primary text-primary font-bold hover:bg-primary hover:text-white"
+            >
+              LOGIN
+            </Link>
+          ) : (
+            <button
+              onClick={logout}
+              className="px-6 py-2 rounded-full border border-red-500 text-red-400 hover:bg-red-500 hover:text-white"
+            >
+              LOGOUT
+            </button>
+          )}
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* ================= MOBILE TOGGLE ================= */}
         <button
           className="md:hidden text-white"
           onClick={() => setIsOpen(!isOpen)}
@@ -95,25 +100,50 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Mobile Menu Overlay */}
+      {/* ================= MOBILE MENU ================= */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass-nav overflow-hidden border-t border-white/10"
+            className="md:hidden glass-nav border-t border-white/10"
           >
             <div className="flex flex-col p-6 gap-4">
               {links.map((link) => (
-                <Link key={link.href} href={link.href} className={cn(
-                      "font-tech text-lg uppercase tracking-wider block py-2",
-                      location === link.href ? "text-primary" : "text-white/80"
-                    )}
-                    onClick={() => setIsOpen(false)}>
-                    {link.label}
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    "uppercase text-sm tracking-wider",
+                    location === link.href
+                      ? "text-primary"
+                      : "text-white/80"
+                  )}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {link.label}
                 </Link>
               ))}
+
+              {/* 🔥 MOBILE LOGIN / LOGOUT */}
+              {!isLoggedIn ? (
+                <Link
+                  href="/login"
+                  className="mt-4 text-center py-3 rounded-xl border border-primary text-primary font-bold"
+                  onClick={() => setIsOpen(false)}
+                >
+                  LOGIN
+                </Link>
+              ) : (
+                <button
+                  onClick={logout}
+                  className="mt-4 flex items-center justify-center gap-2 py-3 rounded-xl border border-red-500 text-red-400"
+                >
+                  <LogOut className="w-4 h-4" />
+                  LOGOUT
+                </button>
+              )}
             </div>
           </motion.div>
         )}
