@@ -78,7 +78,7 @@ export default function Contact() {
                 <div>
                   <h3 className="text-white font-semibold mb-1">Email Us</h3>
                   <p className="text-white/70 text-sm">
-                    support@astrobengal.in
+                    astrocharmpvtltd@gmail.com
                   </p>
                 </div>
               </div>
@@ -90,7 +90,7 @@ export default function Contact() {
                 <div>
                   <h3 className="text-white font-semibold mb-1">Call / WhatsApp</h3>
                   <p className="text-white/70 text-sm">
-                    +91 9XXXXXXXXX
+                    +91 7559165909
                   </p>
                 </div>
               </div>
@@ -114,7 +114,7 @@ export default function Contact() {
                 <div>
                   <h3 className="text-white font-semibold mb-1">Location</h3>
                   <p className="text-white/70 text-sm">
-                    India (Serving Pan-India)
+                    Office no 305, lll rd Floor, Sai Arcade, Baif Road Wagholi,Pune - 412207
                   </p>
                 </div>
               </div>

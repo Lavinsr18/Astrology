@@ -17,6 +17,10 @@ import Dashboard from "./pages/dashboard";
 import ProductsAdmin from "./admin/AdminProducts";
 import OrdersAdmin from "./admin/AdminOrders";
 import ScrollToTop from "./pages/ScrollToTop";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import RefundPolicy from "./pages/RefundPolicy";
+import ShippingPolicy from "./pages/ShippingPolicy";
+import Terms from "./pages/terms"
 
 function Router() {
   return (
@@ -32,6 +36,10 @@ function Router() {
         <Route path="/product/:id" component={ProductView} />
         <Route path="/astrologer" component={Astrologer} />
         <Route path="/login" component={Login} />
+        <Route path="/privacypolicy" component={PrivacyPolicy} />
+        <Route path="/refundpolicy" component={RefundPolicy} />
+        <Route path="/shippingpolicy" component={ShippingPolicy} />
+        <Route path="/terms" component={Terms} />
 
         {/* ADMIN */}
         <Route path="/dashboard" component={Dashboard} />

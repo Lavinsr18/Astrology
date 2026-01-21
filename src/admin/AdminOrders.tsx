@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ENV } from "../config/env";
-
+import AstroLoader from "../components/ui/AstroLoader";
 /* ================= TYPES ================= */
 
 type OrderItem = {
@@ -103,8 +103,9 @@ export default function OrdersAdmin() {
     link.click();
   };
 
-  if (loading) return <p className="text-white/70">Loading orders...</p>;
-
+if (loading) {
+  return <AstroLoader text="Fetching orders..." />;
+}
   /* ================= UI ================= */
 
   return (

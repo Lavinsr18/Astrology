@@ -92,23 +92,23 @@ export default function Footer() {
             </h4>
 
             <ul className="space-y-3 text-sm text-white/70">
-              <li>
-                <Link href="/faq">
-                  <a className="hover:text-primary">FAQs</a>
+             <li>
+                <Link href="/terms">
+                  <a className="hover:text-primary">Terms & Conditions</a>
                 </Link>
               </li>
               <li>
-                <Link href="/shipping">
+                <Link href="/shippingpolicy">
                   <a className="hover:text-primary">Shipping Policy</a>
                 </Link>
               </li>
               <li>
-                <Link href="/returns">
+                <Link href="/refundpolicy">
                   <a className="hover:text-primary">Return & Refund</a>
                 </Link>
               </li>
               <li>
-                <Link href="/privacy">
+                <Link href="/privacypolicy">
                   <a className="hover:text-primary">Privacy Policy</a>
                 </Link>
               </li>
@@ -124,17 +124,17 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-white/70">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-primary" />
-                support@astrocharm.com
+                astrocharmpvtltd@gmail.com
               </li>
 
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-primary" />
-                +91 98765 43210
+                +91 7559165909
               </li>
 
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-primary mt-1" />
-                India – Delivered Nationwide
+                Office no 305, lll rd Floor, Sai Arcade, Baif Road Wagholi,Pune - 412207
               </li>
             </ul>
           </div>

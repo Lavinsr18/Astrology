@@ -10,6 +10,8 @@ export default function ProductsAdmin() {
   const [filtered, setFiltered] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [deleteId, setDeleteId] = useState<string | null>(null);
+const [deleting, setDeleting] = useState(false);
 
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<any>(null);
@@ -42,11 +44,19 @@ export default function ProductsAdmin() {
     setFiltered(data);
   }, [search, category, products]);
 
-  const remove = async (id: string) => {
-    if (!confirm("Delete this product?")) return;
-    await api.adminDelete(`/api/admin/products/${id}`);
+ const confirmDelete = async () => {
+  if (!deleteId) return;
+
+  try {
+    setDeleting(true);
+    await api.adminDelete(`/api/admin/products/${deleteId}`);
+    setDeleteId(null);
     load();
-  };
+  } finally {
+    setDeleting(false);
+  }
+};
+
 
   return (
     <div className="flex flex-col gap-4 h-[75vh]">
@@ -191,12 +201,13 @@ export default function ProductsAdmin() {
                 <Edit size={16} /> Edit
               </button>
 
-              <button
-                onClick={() => remove(p.id)}
-                className="flex items-center gap-1 text-red-400 hover:underline"
-              >
-                <Trash2 size={16} /> Delete
-              </button>
+           <button
+  onClick={() => setDeleteId(p.id)}   // 👈 CHANGE HERE
+  className="flex items-center gap-1 text-red-400 hover:underline"
+>
+  <Trash2 size={16} /> Delete
+</button>
+
             </div>
           </div>
         ))}
@@ -207,6 +218,42 @@ export default function ProductsAdmin() {
           </p>
         )}
       </div>
+      {deleteId && (
+  <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur flex items-center justify-center px-4">
+    <div className="w-full max-w-md bg-[#12091f] border border-white/10 rounded-2xl p-6">
+
+      <h3 className="text-xl font-semibold text-white mb-2">
+        Delete Product
+      </h3>
+
+      <p className="text-white/70 text-sm mb-6">
+        Are you sure you want to permanently delete this product?
+        This action cannot be undone.
+      </p>
+
+      <div className="flex justify-end gap-3">
+        <button
+          onClick={() => setDeleteId(null)}
+          className="px-4 py-2 rounded-lg border border-white/20 text-white hover:bg-white/10"
+        >
+          Cancel
+        </button>
+
+        <button
+          onClick={confirmDelete}
+          disabled={deleting}
+          className={`px-5 py-2 rounded-lg font-semibold
+            ${deleting
+              ? "bg-red-500/40 cursor-not-allowed"
+              : "bg-red-600 hover:bg-red-700"}
+          `}
+        >
+          {deleting ? "Deleting..." : "Delete"}
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* MODAL */}
       {showForm && (

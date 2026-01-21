@@ -5,6 +5,7 @@ import StarBackground from "../components/ui/StarBackground";
 import GlowingButton from "../components/ui/GlowingButton";
 import { RefreshCcw, Truck, BadgeCheck, CreditCard, ChevronDown } from "lucide-react";
 import { PRODUCT_FAQ } from "../lib/product-faq";
+import AstroLoader from "../components/ui/AstroLoader";
 import { ENV } from "../config/env";
 import {
   Star,
@@ -239,11 +240,10 @@ const isCustomerValid = () => {
 };
 
 
-
 if (!product) {
-  return <div className="text-white text-center pt-40">Loading...</div>;
-  
+  return <AstroLoader text="Loading..." />;
 }
+
 
 const content: {
   benefits: BenefitItem[];

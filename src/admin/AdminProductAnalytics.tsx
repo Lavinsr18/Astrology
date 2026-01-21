@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import AstroLoader from "../components/ui/AstroLoader";
 import { api } from "../lib/api";
 import {
   TrendingUp,
@@ -91,7 +92,9 @@ export default function AdminProductAnalytics() {
     a.click();
   };
 
-  if (!data) return <p>Loading analytics...</p>;
+  if (!data) {
+  return <AstroLoader text="Loading analytics..." />;
+}
 
   const { summary } = data;
 

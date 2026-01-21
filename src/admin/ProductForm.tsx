@@ -143,6 +143,7 @@ const submit = async () => {
           <label className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/20 text-primary cursor-pointer hover:bg-primary/30 transition">
             <Upload size={16} />
             {uploading ? "Uploading..." : "Upload Image"}
+            
             <input
               type="file"
               accept="image/*"
