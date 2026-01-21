@@ -20,7 +20,7 @@ import ScrollToTop from "./pages/ScrollToTop";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import ShippingPolicy from "./pages/ShippingPolicy";
-import Terms from "./pages/terms"
+import Terms from "./pages/Terms"
 
 function Router() {
   return (
