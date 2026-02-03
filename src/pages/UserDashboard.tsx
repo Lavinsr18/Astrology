@@ -1,20 +1,20 @@
 import { useState } from "react";
-import ProductsAdmin from "../admin/AdminProducts";
-import OrdersAdmin from "../admin/AdminOrders";
-import QueriesAdmin from "../admin/AdminQueries";
+import Wishlist from "../user/Wishlist";
+import Profile from "../user/Profile";
+import Cart from "../pages/cart";
 import StarBackground from "../components/ui/StarBackground";
 import { Package, ShoppingCart, MessageCircle, BarChart3} from "lucide-react";
 import { cn } from "../lib/utils";
-import AdminProductAnalytics from "../admin/AdminProductAnalytics";
+import UserOrders from "../user/UserOrders"
 
 
 
 
-type TabType = "queries" | "products" | "orders" | "analytics";
+type TabType = "profile" | "wishlist" | "cart" | "userorders";
 
 
-export default function Dashboard() {
-  const [tab, setTab] = useState<TabType>("queries");
+export default function UserDashboard() {
+  const [tab, setTab] = useState<TabType>("profile");
 
   return (
     <div className="min-h-screen pt-24 relative text-white">
@@ -22,30 +22,30 @@ export default function Dashboard() {
 
       <div className="container mx-auto px-4 md:px-6">
         <h1 className="text-2xl md:text-3xl font-bold mb-6">
-          Admin Dashboard
+          User Dashboard
         </h1>
 
         {/* ===== MOBILE TOP TABS ===== */}
         <div className="flex md:hidden gap-2 mb-6 bg-white/5 p-2 rounded-xl border border-white/10">
           <MobileTab
-            active={tab === "queries"}
+            active={tab === "profile"}
             icon={<MessageCircle size={18} />}
-            onClick={() => setTab("queries")}
+            onClick={() => setTab("profile")}
           />
           <MobileTab
-            active={tab === "products"}
+            active={tab === "wishlist"}
             icon={<Package size={18} />}
-            onClick={() => setTab("products")}
+            onClick={() => setTab("wishlist")}
           />
           <MobileTab
-            active={tab === "orders"}
+            active={tab === "cart"}
             icon={<ShoppingCart size={18} />}
-            onClick={() => setTab("orders")}
+            onClick={() => setTab("cart")}
           />
           <MobileTab
-  active={tab === "analytics"}
+  active={tab === "userorders"}
   icon={<BarChart3 size={18} />}
-  onClick={() => setTab("analytics")}
+  onClick={() => setTab("userorders")}
 />
         </div>
 
@@ -53,40 +53,40 @@ export default function Dashboard() {
           {/* ===== DESKTOP SIDEBAR ===== */}
           <aside className="hidden md:block w-64 bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10 h-fit sticky top-28">
             <SidebarButton
-              active={tab === "queries"}
+              active={tab === "profile"}
               icon={<MessageCircle />}
-              label="Queries"
-              onClick={() => setTab("queries")}
+              label="profile"
+              onClick={() => setTab("profile")}
             />
 
             <SidebarButton
-              active={tab === "products"}
+              active={tab === "wishlist"}
               icon={<Package />}
-              label="Products"
-              onClick={() => setTab("products")}
+              label="Wishlist"
+              onClick={() => setTab("wishlist")}
             />
 
             <SidebarButton
-              active={tab === "orders"}
+              active={tab === "cart"}
               icon={<ShoppingCart />}
-              label="Orders"
-              onClick={() => setTab("orders")}
+              label="Cart"
+              onClick={() => setTab("cart")}
             />
 
             <SidebarButton
-  active={tab === "analytics"}
+  active={tab === "userorders"}
   icon={<BarChart3 />}
-  label="Analytics"
-  onClick={() => setTab("analytics")}
+  label="userorders"
+  onClick={() => setTab("userorders")}
 />
           </aside>
 
           {/* ===== CONTENT ===== */}
           <main className="flex-1 bg-white/5 backdrop-blur-md rounded-2xl p-4 md:p-6 border border-white/10 min-h-[400px]">
-            {tab === "queries" && <QueriesAdmin />}
-            {tab === "products" && <ProductsAdmin />}
-            {tab === "orders" && <OrdersAdmin />}
-            {tab === "analytics" && <AdminProductAnalytics />}
+            {tab === "profile" && <Profile />}
+            {tab === "wishlist" && <Wishlist />}
+            {tab === "cart" && <Cart />}
+            {tab === "userorders" && < UserOrders />}
           </main>
         </div>
       </div>

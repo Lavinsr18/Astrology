@@ -30,11 +30,11 @@ export default function Footer() {
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
-              <Star className="w-8 h-8 text-primary fill-primary" />
+        <img src="/logo.png" className="w-12 h-12" />
             </motion.div>
-            <span className="text-2xl font-display font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-white to-accent">
-              ASTROCHARM
-            </span>
+            <Link href="/" className="flex items-center gap-2">
+          <span className="font-bold text-lg text-white">AstroCharm</span>
+        </Link>
         </Link>
 
             <p className="text-sm text-white/70 leading-relaxed mb-4">
@@ -73,8 +73,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/zodiac">
-                  <a className="hover:text-primary">Zodiac Bracelets</a>
+                <Link href="/about">
+                  <a className="hover:text-primary">About Us</a>
                 </Link>
               </li>
               <li>
@@ -85,10 +85,10 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* CUSTOMER SUPPORT */}
+          {/* user SUPPORT */}
           <div>
             <h4 className="text-white font-semibold mb-4">
-              Customer Support
+              user Support
             </h4>
 
             <ul className="space-y-3 text-sm text-white/70">

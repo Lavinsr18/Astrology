@@ -88,7 +88,7 @@ export default function ShippingPolicy() {
             <ul className="list-disc pl-6 space-y-2 mt-3">
               <li>Courier partner issues</li>
               <li>Natural calamities or government restrictions</li>
-              <li>Incorrect or incomplete address provided by the customer</li>
+              <li>Incorrect or incomplete address provided by the user</li>
             </ul>
           </Section>
 

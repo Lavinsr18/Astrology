@@ -7,6 +7,7 @@ import { RefreshCcw, Truck, BadgeCheck, CreditCard, ChevronDown } from "lucide-r
 import { PRODUCT_FAQ } from "../lib/product-faq";
 import AstroLoader from "../components/ui/AstroLoader";
 import { ENV } from "../config/env";
+import { useCart } from "../components/layout/CartContext";
 import {
   Star,
   ShoppingBag,
@@ -73,6 +74,8 @@ export default function ProductView() {
    const [showForm, setShowForm] = useState(false);
 const [orderSuccess, setOrderSuccess] = useState(false);
 const [formError, setFormError] = useState("");
+const { addToCart } = useCart();
+
 
 const availableStock =
   product ? product.totalStock - product.soldStock : 0;
@@ -104,7 +107,7 @@ const totalAmount = product ? product.price * quantity : 0;
 //       headers: { "Content-Type": "application/json" },
 //       body: JSON.stringify({
 //         product,
-//         customer,
+//         user,
 //       }),
 //     });
 
@@ -124,9 +127,9 @@ const totalAmount = product ? product.price * quantity : 0;
 //       },
 
 //     prefill: {
-//   name: `${customer.firstName} ${customer.lastName}`,
-//   email: customer.email,
-//   contact: customer.phone,
+//   name: `${user.firstName} ${user.lastName}`,
+//   email: user.email,
+//   contact: user.phone,
 // },
 
 
@@ -142,7 +145,7 @@ const totalAmount = product ? product.price * quantity : 0;
 // };
 
 const handleConfirmPurchase = async () => {
-  if (!isCustomerValid()) {
+  if (!isuserValid()) {
     setFormError("Please fill all required fields correctly");
     return;
   }
@@ -155,7 +158,7 @@ const handleConfirmPurchase = async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         product,
-        customer,
+        user,
         quantity,
       }),
     });
@@ -183,9 +186,9 @@ const handleConfirmPurchase = async () => {
       },
 
       prefill: {
-        name: `${customer.firstName} ${customer.lastName}`,
-        email: customer.email,
-        contact: customer.phone,
+        name: `${user.firstName} ${user.lastName}`,
+        email: user.email,
+        contact: user.phone,
       },
 
       theme: { color: "#7c3aed" },
@@ -200,7 +203,7 @@ const handleConfirmPurchase = async () => {
 
 
 
-const [customer, setCustomer] = useState({
+const [user, setuser] = useState({
   firstName: "",
   lastName: "",
   email: "",
@@ -224,17 +227,17 @@ const requiredFields = [
   "pincode",
 ];
 
-const isCustomerValid = () => {
+const isuserValid = () => {
   for (const field of requiredFields) {
-    if (!customer[field as keyof typeof customer]?.trim()) {
+    if (!user[field as keyof typeof user]?.trim()) {
       return false;
     }
   }
 
   // extra validations
-  if (!/^\d{10}$/.test(customer.phone)) return false;
-  if (!/^\d{6}$/.test(customer.pincode)) return false;
-  if (!/^\S+@\S+\.\S+$/.test(customer.email)) return false;
+  if (!/^\d{10}$/.test(user.phone)) return false;
+  if (!/^\d{6}$/.test(user.pincode)) return false;
+  if (!/^\S+@\S+\.\S+$/.test(user.email)) return false;
 
   return true;
 };
@@ -253,6 +256,10 @@ const content: {
   benefits: [],
   why: "",
   who: [],
+};
+
+const handleAddToCart = () => {
+  addToCart(product._id, quantity);
 };
 
 
@@ -283,7 +290,19 @@ const content: {
             className="relative"
           >
             <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-            <img src={product.image} alt={product.name} />
+            {product.image ? (
+  <img
+    src={product.image}
+    alt={product.name}
+    loading="lazy"
+    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+  />
+) : (
+  <div className="w-full h-full flex items-center justify-center text-white/40 text-sm">
+    No Image
+  </div>
+)}
+
 
 
             <span className="absolute top-4 left-4 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
@@ -391,11 +410,19 @@ const content: {
 </GlowingButton>
 
 
-              <Link href="/shop">
-                <GlowingButton size="lg" variant="outline">
-                  Continue Shopping
-                </GlowingButton>
-              </Link>
+              <div className="flex flex-wrap gap-4">
+  {/* ADD TO CART */}
+  <GlowingButton
+    size="lg"
+    variant="outline"
+    icon={<ShoppingBag />}
+    onClick={handleAddToCart}
+    disabled={availableStock === 0}
+  >
+    Add to Cart
+  </GlowingButton>
+</div>
+
             </div>
           </motion.div>
         </div>
@@ -585,6 +612,10 @@ const content: {
           <p className="text-white font-medium">Wear Type</p>
           <p>Daily Wear</p>
         </div>
+        <div>
+  <p className="text-white font-medium">Which Hand to Wear</p>
+  <p>{product.whichHandToWear}</p>
+</div>
 
         <div>
           <p className="text-white font-medium">Care Instructions</p>
@@ -714,14 +745,14 @@ const content: {
           <input
             className="input"
             placeholder="First Name"
-            value={customer.firstName}
-            onChange={e => setCustomer({ ...customer, firstName: e.target.value })}
+            value={user.firstName}
+            onChange={e => setuser({ ...user, firstName: e.target.value })}
           />
           <input
             className="input"
             placeholder="Last Name"
-            value={customer.lastName}
-            onChange={e => setCustomer({ ...customer, lastName: e.target.value })}
+            value={user.lastName}
+            onChange={e => setuser({ ...user, lastName: e.target.value })}
           />
         </div>
 
@@ -730,14 +761,14 @@ const content: {
           <input
             className="input"
             placeholder="Email Address"
-            value={customer.email}
-            onChange={e => setCustomer({ ...customer, email: e.target.value })}
+            value={user.email}
+            onChange={e => setuser({ ...user, email: e.target.value })}
           />
           <input
             className="input"
             placeholder="Phone Number"
-            value={customer.phone}
-            onChange={e => setCustomer({ ...customer, phone: e.target.value })}
+            value={user.phone}
+            onChange={e => setuser({ ...user, phone: e.target.value })}
           />
         </div>
 
@@ -745,35 +776,35 @@ const content: {
         <input
           className="input"
           placeholder="Address Line 1 (House No, Street)"
-          value={customer.addressLine1}
-          onChange={e => setCustomer({ ...customer, addressLine1: e.target.value })}
+          value={user.addressLine1}
+          onChange={e => setuser({ ...user, addressLine1: e.target.value })}
         />
 
         <input
           className="input"
           placeholder="Address Line 2 (Landmark, Area)"
-          value={customer.addressLine2}
-          onChange={e => setCustomer({ ...customer, addressLine2: e.target.value })}
+          value={user.addressLine2}
+          onChange={e => setuser({ ...user, addressLine2: e.target.value })}
         />
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <input
             className="input"
             placeholder="City"
-            value={customer.city}
-            onChange={e => setCustomer({ ...customer, city: e.target.value })}
+            value={user.city}
+            onChange={e => setuser({ ...user, city: e.target.value })}
           />
           <input
             className="input"
             placeholder="State"
-            value={customer.state}
-            onChange={e => setCustomer({ ...customer, state: e.target.value })}
+            value={user.state}
+            onChange={e => setuser({ ...user, state: e.target.value })}
           />
           <input
             className="input"
             placeholder="Pincode"
-            value={customer.pincode}
-            onChange={e => setCustomer({ ...customer, pincode: e.target.value })}
+            value={user.pincode}
+            onChange={e => setuser({ ...user, pincode: e.target.value })}
           />
         </div>
 
@@ -798,7 +829,7 @@ const content: {
        <GlowingButton
   className="w-full"
   onClick={handleConfirmPurchase}
-  disabled={!isCustomerValid()}
+  disabled={!isuserValid()}
 >
   Pay ₹{totalAmount}
 </GlowingButton>

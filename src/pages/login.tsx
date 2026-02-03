@@ -13,38 +13,47 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   
+const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setLoading(true);
+  setError("");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      const res = await fetch(`${ENV.API_BASE_URL}/api/auth/login`, {
+  try {
+    const res = await fetch(
+      `${ENV.API_BASE_URL}/api/user/auth/login`,
+      {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.message || "Invalid credentials");
-        return;
       }
+    );
 
-      // ✅ Backend connected here
-      localStorage.setItem("token", data.token);
-
-      // ✅ Redirect to dashboard
-      setLocation("/Dashboard");
-
-    } catch {
-      setError("Server not reachable");
-    } finally {
-      setLoading(false);
+    const data = await res.json();
+    if (!res.ok) {
+      setError(data.message || "Invalid credentials");
+      return;
     }
-  };
+
+    localStorage.setItem("token", data.token);
+
+    /* 🔔 NOTIFY CONTEXT */
+window.dispatchEvent(new Event("auth-change"));
+
+    localStorage.setItem("role", data.role);
+
+    // 🔥 ROLE BASED REDIRECT
+    if (data.role === "admin") {
+      setLocation("/admindashboard");      // AdminDashboard
+    } else {
+      setLocation("/userdashboard");        // UserDashboard
+    }
+
+  } catch {
+    setError("Server not reachable");
+  } finally {
+    setLoading(false);
+  }
+};
 
 
   return (
@@ -55,7 +64,7 @@ export default function Login() {
 
         {/* Logo */}
         <h1 className="text-3xl font-semibold tracking-widest text-center">
-          ASTRO<span className="text-[#e0b973]">CHARM</span>
+          Astro<span className="text-[#e0b973]">Charm</span>
         </h1>
 
         <p className="text-center text-sm text-white/80 mt-2 mb-8">
@@ -122,7 +131,7 @@ export default function Login() {
         {/* Signup */}
         <p className="text-center text-xs text-white/70 mt-6">
           New to AstroCharm?{" "}
-          <a href="#" className="text-[#b88cff] font-medium hover:underline">
+          <a href="/signup" className="text-[#b88cff] font-medium hover:underline">
             Create Account
           </a>
         </p>

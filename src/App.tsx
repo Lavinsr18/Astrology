@@ -13,14 +13,21 @@ import ProductView from "./pages/ProductView";
 import Footer from "./pages/Footer";
 import Astrologer from "./pages/Astrologer";
 import Login from "./pages/login";
-import Dashboard from "./pages/dashboard";
+import Dashboard from "./pages/AdminDashboard";
 import ProductsAdmin from "./admin/AdminProducts";
 import OrdersAdmin from "./admin/AdminOrders";
 import ScrollToTop from "./pages/ScrollToTop";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import RefundPolicy from "./pages/RefundPolicy";
 import ShippingPolicy from "./pages/ShippingPolicy";
-import Terms from "./pages/Terms"
+import Terms from "./pages/Terms";
+import SignUp from "./pages/Signup";``
+import Account from "./pages/UserDashboard";
+import Profile from "./user/Profile";
+import Wishlist from "./user/Wishlist";
+import New from "./admin/new"
+import Cart from "./pages/cart"
+
 
 function Router() {
   return (
@@ -40,11 +47,18 @@ function Router() {
         <Route path="/refundpolicy" component={RefundPolicy} />
         <Route path="/shippingpolicy" component={ShippingPolicy} />
         <Route path="/terms" component={Terms} />
-
+         <Route path="/signup" component={SignUp} />
         {/* ADMIN */}
-        <Route path="/dashboard" component={Dashboard} />
+        <Route path="/admindashboard" component={Dashboard} />
         <Route path="/ProductsAdmin" component={ProductsAdmin} />
         <Route path="/OrdersAdmin" component={OrdersAdmin} />
+         <Route path="/userdashboard" component={Account} />
+          <Route path="/New" component={New} />
+         
+         {/* User */}
+          <Route path="/profile" component={Profile} />
+          <Route path="/wishlist" component={Wishlist} />
+           <Route path="/cart" component={Cart} />
 
         <Route component={NotFound} />
       </Switch>

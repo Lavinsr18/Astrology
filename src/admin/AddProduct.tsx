@@ -11,6 +11,7 @@ export default function AddProduct({ onAdded }: { onAdded: () => void }) {
     originalPrice: "",
     stones: "",
     use: "",
+    whichHandToWear: "Both", // ✅
   });
 
   const submit = async () => {
@@ -35,6 +36,19 @@ export default function AddProduct({ onAdded }: { onAdded: () => void }) {
           onChange={e => setForm({ ...form, [key]: e.target.value })}
         />
       ))}
+
+      {Object.keys(form)
+  .filter(key => key !== "whichHandToWear")
+  .map(key => (
+    <input
+      key={key}
+      placeholder={key}
+      className="w-full input"
+      value={form[key]}
+      onChange={e => setForm({ ...form, [key]: e.target.value })}
+    />
+))}
+
 
       <button onClick={submit} className="btn-primary">
         Add Product

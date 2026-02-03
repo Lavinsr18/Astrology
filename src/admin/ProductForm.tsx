@@ -14,6 +14,8 @@ const emptyProduct = {
   originalPrice: "",
   stones: "",
   use: "",
+  totalStock: 0,   
+  whichHandToWear: "Both",
   content: {
     why: "",
     benefits: [{ icon: "", text: "" }],
@@ -30,12 +32,20 @@ export default function ProductForm({
   onSaved: () => void;
   onClose: () => void;
 }) {
-  const [form, setForm] = useState<any>(initialData || emptyProduct);
+ const [form, setForm] = useState<any>(emptyProduct);
   const [uploading, setUploading] = useState(false);
 
 const [saving, setSaving] = useState(false);
 const [toast, setToast] = useState({ show: false, type: "success", msg: "" });
 
+useEffect(() => {
+  if (initialData) {
+    setForm({
+      ...emptyProduct,   // default values
+      ...initialData,    // backend se aaya data overwrite karega
+    });
+  }
+}, [initialData]);
 
 
 
@@ -174,6 +184,25 @@ const submit = async () => {
           value={form.stones}
           onChange={e => setForm({ ...form, stones: e.target.value })}
         />
+
+        <div className="space-y-1">
+  <label className="text-sm text-white/70">
+    Which Hand to Wear
+  </label>
+
+  <select
+    className="input"
+    value={form.whichHandToWear}
+    onChange={e =>
+      setForm({ ...form, whichHandToWear: e.target.value })
+    }
+  >
+    <option value="Left">Left Hand</option>
+    <option value="Right">Right Hand</option>
+    <option value="Both">Both Hands</option>
+  </select>
+</div>
+
 
         <input
           className="input"

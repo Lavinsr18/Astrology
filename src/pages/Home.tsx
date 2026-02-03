@@ -194,7 +194,7 @@ useEffect(() => {
           viewport={{ once: true }}
           transition={{ delay: i * 0.1 }}
         >
-          <Link href={`/product/${product._id}`}>
+          <Link href={`/product/${product.id}`}>
             <AnimatedCard
               className="group h-full p-0 overflow-hidden cursor-pointer
                          border-white/10 hover:border-primary/50"

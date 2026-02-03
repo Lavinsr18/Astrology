@@ -158,3 +158,57 @@
 .btn-secondary {
   @apply bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg;
 }
+
+.dropdown-item {
+  width: 100%;                 /* 🔥 MOST IMPORTANT */
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.dropdown-item.logout:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(239, 68, 68, 0.25),
+    rgba(239, 68, 68, 0.05)
+  );
+}
+
+
+.dropdown-item:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(168, 85, 247, 0.25),
+    rgba(139, 92, 246, 0.05)
+  );
+}
+
+.filter-select {
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: white;
+  padding: 0.55rem 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: all 0.25s ease;
+}
+
+.filter-select:hover {
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.filter-select:focus {
+  border-color: hsl(var(--primary));
+  box-shadow: 0 0 0 1px hsl(var(--primary));
+}
+
+.filter-select option {
+  background: #0b0b0b;
+  color: white;
+}

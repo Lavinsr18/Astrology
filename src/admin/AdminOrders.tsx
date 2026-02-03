@@ -17,7 +17,7 @@ type Order = {
   createdAt: string;
   items?: OrderItem[];
 
-  customer: {
+  user: {
     fullName: string;
     email: string;
     phone: string;
@@ -39,6 +39,7 @@ type Order = {
 
   status?: "new" | "processing" | "shipped" | "delivered";
 };
+
 
 /* ================= COMPONENT ================= */
 
@@ -63,32 +64,37 @@ export default function OrdersAdmin() {
   /* ================= FILTER + SEARCH ================= */
 
   const filteredOrders = useMemo(() => {
-    return orders.filter(order => {
-      const matchSearch =
-        order.customer.fullName.toLowerCase().includes(search.toLowerCase()) ||
-        order.customer.email.toLowerCase().includes(search.toLowerCase()) ||
-        order.customer.phone.includes(search);
+  return orders.filter(order => {
+    const user = order.user;
+    if (!user) return false;
 
-      const matchPayment =
-        paymentFilter === "all" ||
-        order.payment?.status === paymentFilter;
+    const matchSearch =
+      user.fullName.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase()) ||
+      user.phone.includes(search);
 
-      return matchSearch && matchPayment;
-    });
-  }, [orders, search, paymentFilter]);
+    const matchPayment =
+      paymentFilter === "all" ||
+      order.payment?.status === paymentFilter;
+
+    return matchSearch && matchPayment;
+  });
+}, [orders, search, paymentFilter]);
+
 
   /* ================= CSV EXPORT ================= */
 
   const exportCSV = () => {
-    const rows = orders.map(o => ({
-      Name: o.customer.fullName,
-      Email: o.customer.email,
-      Phone: o.customer.phone,
-      Amount: o.amount,
-      Payment: o.payment?.status || "pending",
-      Products: o.items?.map(i => `${i.name} x${i.quantity}`).join(" | "),
-      Date: new Date(o.createdAt).toLocaleString(),
-    }));
+   const rows = orders.map(o => ({
+  Name: o.user.fullName,
+  Email: o.user.email,
+  Phone: o.user.phone,
+  Amount: o.amount,
+  Payment: o.payment?.status || "pending",
+  Products: o.items?.map(i => `${i.name} x${i.quantity}`).join(" | "),
+  Date: new Date(o.createdAt).toLocaleString(),
+}));
+
 
     const csv =
       "data:text/csv;charset=utf-8," +
@@ -149,7 +155,7 @@ if (loading) {
                        cursor-pointer hover:border-primary hover:bg-black/60 transition"
           >
             <div className="flex justify-between mb-1">
-              <p className="font-semibold">{order.customer.fullName}</p>
+              <p className="font-semibold">{order.user.fullName}</p>
               <span
                 className={`text-xs px-3 py-1 rounded-full ${
                   order.payment?.status === "paid"
@@ -162,7 +168,7 @@ if (loading) {
             </div>
 
             <p className="text-sm text-white/60">
-              {order.customer.email} • {order.customer.phone}
+              {order.user.email} • {order.user.phone}
             </p>
 
             {/* PRODUCT SUMMARY */}
@@ -234,23 +240,25 @@ if (loading) {
     </div>
   </div>
 )}
-              <p><b>Name:</b> {selectedOrder.customer.fullName}</p>
-              <p><b>Email:</b> {selectedOrder.customer.email}</p>
-              <p><b>Phone:</b> {selectedOrder.customer.phone}</p>
+           <p><b>Name:</b> {selectedOrder.user.fullName}</p>
+<p><b>Email:</b> {selectedOrder.user.email}</p>
+<p><b>Phone:</b> {selectedOrder.user.phone}</p>
+
 
               <div className="mt-2">
                 <b>Address:</b>
                 <p className="text-white/70 mt-1">
-                  {selectedOrder.customer.address.line1}
-                  {selectedOrder.customer.address.line2 && (
-                    <> , {selectedOrder.customer.address.line2}</>
-                  )}
-                  <br />
-                  {selectedOrder.customer.address.city},{" "}
-                  {selectedOrder.customer.address.state}
-                  <br />
-                  {selectedOrder.customer.address.pincode},{" "}
-                  {selectedOrder.customer.address.country}
+                  {selectedOrder.user.address.line1}
+{selectedOrder.user.address.line2 && (
+  <> , {selectedOrder.user.address.line2}</>
+)}
+<br />
+{selectedOrder.user.address.city},{" "}
+{selectedOrder.user.address.state}
+<br />
+{selectedOrder.user.address.pincode},{" "}
+{selectedOrder.user.address.country}
+
                 </p>
               </div>
 

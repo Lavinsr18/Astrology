@@ -102,7 +102,7 @@ export default function Contact() {
                 <div>
                   <h3 className="text-white font-semibold mb-1">Support Hours</h3>
                   <p className="text-white/70 text-sm">
-                    24 × 7 Customer Assistance
+                    24 × 7 user Assistance
                   </p>
                 </div>
               </div>
