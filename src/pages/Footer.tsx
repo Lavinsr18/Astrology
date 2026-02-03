@@ -49,9 +49,6 @@ export default function Footer() {
               <a href="#" className="text-white/60 hover:text-primary">
                 <Facebook />
               </a>
-              <a href="#" className="text-white/60 hover:text-primary">
-                <Twitter />
-              </a>
             </div>
           </div>
 
@@ -88,7 +85,7 @@ export default function Footer() {
           {/* user SUPPORT */}
           <div>
             <h4 className="text-white font-semibold mb-4">
-              user Support
+              User Support
             </h4>
 
             <ul className="space-y-3 text-sm text-white/70">
