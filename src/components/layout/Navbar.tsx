@@ -41,7 +41,6 @@ export default function Navbar() {
   const links = [
     { href: "/", label: "Home" },
     { href: "/shop", label: "Shop" },
-    { href: "/astrologer", label: "Astrologer" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" },
   ];
@@ -189,17 +188,106 @@ const logout = () => {
       </div>
 
       {/* MOBILE MENU */}
-      {open && (
-        <div className="md:hidden bg-black border-t border-white/10 px-6 py-4 space-y-3">
-          {links.map(l => (
-            <Link key={l.href} href={l.href} onClick={() => setOpen(false)}>
-              {l.label}
-            </Link>
-          ))}
-          <Link href="/wishlist">Wishlist</Link>
-          <Link href="/cart">Cart</Link>
+      <AnimatePresence>
+  {open && (
+    <motion.div
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -10 }}
+      transition={{ duration: 0.25 }}
+      className="
+        md:hidden fixed top-16 left-0 w-full z-40
+        bg-gradient-to-b from-[#14001f] to-black
+        border-t border-white/10
+        px-6 py-6 space-y-4
+      "
+    >
+      {/* NAV LINKS */}
+      {links.map(l => (
+        <Link
+          key={l.href}
+          href={l.href}
+          onClick={() => setOpen(false)}
+          className="block text-white text-lg font-medium"
+        >
+          {l.label}
+        </Link>
+      ))}
+
+      <div className="h-px bg-white/10 my-4" />
+
+      {/* ICON ROW */}
+      <div className="flex items-center justify-between">
+        <Link
+          href="/wishlist"
+          onClick={() => setOpen(false)}
+          className="relative text-white flex items-center gap-2"
+        >
+          <Heart size={22} />
+          Wishlist
+          {wishlistCount > 0 && <Badge count={wishlistCount} />}
+        </Link>
+
+        <Link
+          href="/cart"
+          onClick={() => setOpen(false)}
+          className="relative text-white flex items-center gap-2"
+        >
+          <ShoppingCart size={22} />
+          Cart
+          {cartCount > 0 && <Badge count={cartCount} />}
+        </Link>
+      </div>
+
+      <div className="h-px bg-white/10 my-4" />
+
+      {/* AUTH */}
+      {!loggedIn ? (
+        <Link
+          href="/login"
+          onClick={() => setOpen(false)}
+          className="
+            block text-center py-3 rounded-xl
+            border border-primary text-primary font-semibold
+          "
+        >
+          Login
+        </Link>
+      ) : (
+        <div className="space-y-3">
+          <Link
+            href="/userdashboard"
+            onClick={() => setOpen(false)}
+            className="block text-white font-medium"
+          >
+            Dashboard
+          </Link>
+
+          <Link
+            href="/orders"
+            onClick={() => setOpen(false)}
+            className="block text-white font-medium"
+          >
+            My Orders
+          </Link>
+
+          <button
+            onClick={() => {
+              setOpen(false);
+              logout();
+            }}
+            className="
+              w-full text-left text-red-400 font-medium
+            "
+          >
+            Logout
+          </button>
         </div>
       )}
+    </motion.div>
+  )}
+</AnimatePresence>
+
     </nav>
   );
 }

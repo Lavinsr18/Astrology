@@ -76,7 +76,7 @@ export default function UserDashboard() {
             <SidebarButton
   active={tab === "userorders"}
   icon={<BarChart3 />}
-  label="userorders"
+  label="UserOrders"
   onClick={() => setTab("userorders")}
 />
           </aside>

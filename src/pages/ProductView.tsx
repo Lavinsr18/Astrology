@@ -8,6 +8,7 @@ import { PRODUCT_FAQ } from "../lib/product-faq";
 import AstroLoader from "../components/ui/AstroLoader";
 import { ENV } from "../config/env";
 import { useCart } from "../components/layout/CartContext";
+import { useWishlist } from "../components/layout/WishlistContext";
 import {
   Star,
   ShoppingBag,
@@ -15,6 +16,7 @@ import {
   ShieldCheck,
   Sparkles,
   Users,
+  Heart,
   Zap,
   HeartHandshake,
   CheckCircle2,
@@ -75,6 +77,11 @@ export default function ProductView() {
 const [orderSuccess, setOrderSuccess] = useState(false);
 const [formError, setFormError] = useState("");
 const { addToCart } = useCart();
+const { addToWishlist, removeFromWishlist, isWishlisted } = useWishlist();
+
+const [showWishlistToast, setShowWishlistToast] = useState(false);
+const [wishlistToastProduct, setWishlistToastProduct] = useState("");
+
 
 
 const availableStock =
@@ -244,8 +251,12 @@ const isuserValid = () => {
 
 
 if (!product) {
+  
   return <AstroLoader text="Loading..." />;
 }
+
+const productId = product._id;
+const isWished = isWishlisted(productId);
 
 
 const content: {
@@ -282,38 +293,71 @@ const handleAddToCart = () => {
         {/* ================= PRODUCT HERO ================= */}
         <div className="grid lg:grid-cols-2 gap-14 items-center">
 
-          {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="relative"
-          >
-            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-            {product.image ? (
+          {/* ================= WishList ================= */}
+        <motion.div
+  initial={{ opacity: 0, scale: 0.9 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ duration: 0.6 }}
+  className="relative"
+>
+  {/* ❤️ WISHLIST BUTTON */}
+  <button
+    onClick={(e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (!localStorage.getItem("token")) {
+        window.location.href = "/login";
+        return;
+      }
+
+      if (isWished) {
+        removeFromWishlist(productId);
+        setWishlistToastProduct("Removed from wishlist");
+      } else {
+        addToWishlist(productId);
+        setWishlistToastProduct("Added to wishlist");
+      }
+
+      setShowWishlistToast(true);
+      setTimeout(() => setShowWishlistToast(false), 2000);
+    }}
+    className={`
+      absolute top-4 right-4 z-20
+      p-2 rounded-full
+      backdrop-blur
+      transition
+      ${
+        isWished
+          ? "bg-pink-500/30 text-pink-400"
+          : "bg-black/60 text-white hover:bg-primary/30"
+      }
+    `}
+    title="Wishlist"
+  >
+    <Heart className={`w-5 h-5 ${isWished ? "fill-pink-500" : ""}`} />
+  </button>
+
+  {/* IMAGE */}
+  <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
+
   <img
     src={product.image}
     alt={product.name}
     loading="lazy"
-    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+    className="w-full h-full object-cover"
   />
-) : (
-  <div className="w-full h-full flex items-center justify-center text-white/40 text-sm">
-    No Image
-  </div>
-)}
 
-
-
-            <span className="absolute top-4 left-4 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
-              {Math.round(
-                ((product.originalPrice - product.price) /
-                  product.originalPrice) *
-                  100
-              )}
-              % OFF
-            </span>
-          </motion.div>
+  {/* DISCOUNT */}
+  <span className="absolute top-4 left-4 bg-primary text-white text-sm font-bold px-3 py-1 rounded-full">
+    {Math.round(
+      ((product.originalPrice - product.price) /
+        product.originalPrice) *
+        100
+    )}
+    % OFF
+  </span>
+</motion.div>
 
           {/* Details */}
           <motion.div
@@ -839,7 +883,33 @@ const handleAddToCart = () => {
   </motion.div>
 )}
 
-      
+     {showWishlistToast && (
+  <motion.div
+    initial={{ opacity: 0, y: 30, scale: 0.9 }}
+    animate={{ opacity: 1, y: 0, scale: 1 }}
+    exit={{ opacity: 0, y: 30 }}
+    className="
+      fixed bottom-6 right-6 z-50
+      bg-black/80 backdrop-blur-xl
+      border border-pink-500/30
+      px-5 py-4 rounded-2xl
+      shadow-xl flex items-center gap-3
+    "
+  >
+    <div className="w-10 h-10 rounded-full bg-pink-500/20 flex items-center justify-center">
+      <Heart className="w-5 h-5 text-pink-400" />
+    </div>
+
+    <div>
+      <p className="text-white font-semibold text-sm">
+        {wishlistToastProduct}
+      </p>
+    </div>
+  </motion.div>
+)}
+
+
+
 
       {/* ================= SUCCESS ================= */}
       {orderSuccess && (

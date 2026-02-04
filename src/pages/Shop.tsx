@@ -23,7 +23,6 @@ const [toastProduct, setToastProduct] = useState("");
 const [sortBy, setSortBy] = useState("relevance");
 const [priceRange, setPriceRange] = useState("all");
 const [stockFilter, setStockFilter] = useState("all");
-const [discountFilter, setDiscountFilter] = useState("all");
 const [showWishlistToast, setShowWishlistToast] = useState(false);
 const [wishlistToastProduct, setWishlistToastProduct] = useState("");
 
@@ -64,23 +63,12 @@ const filteredProducts = products
       (stockFilter === "in" && availableStock > 0) ||
       (stockFilter === "low" && availableStock > 0 && availableStock <= 5);
 
-    // Discount
-    const discountPercent =
-      ((product.originalPrice - product.price) /
-        product.originalPrice) *
-      100;
-
-    const matchesDiscount =
-      discountFilter === "all" ||
-      (discountFilter === "20" && discountPercent >= 20) ||
-      (discountFilter === "40" && discountPercent >= 40);
 
     return (
       matchesCategory &&
       matchesSearch &&
       matchesPrice &&
-      matchesStock &&
-      matchesDiscount
+      matchesStock
     );
   })
   .sort((a, b) => {
@@ -109,91 +97,115 @@ const filteredProducts = products
           </p>
         </div>
 
-        {/* Filters and Search */}
-        {/* FILTERS & SEARCH */}
-<div className="mb-12 glass-card p-4 rounded-xl sticky top-16 z-40 backdrop-blur-xl bg-black/50 border border-white/10">
-  
-  <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
+{/* FILTERS & SEARCH – SINGLE LINE */}
+<div className="mb-12 sticky top-16 z-40">
+  <div className="
+    glass-card
+    bg-black/60 backdrop-blur-xl
+    border border-white/10
+    rounded-xl
+    px-4 py-3
+  ">
+    <div className="flex flex-wrap lg:flex-nowrap items-center gap-3">
 
-    {/* SEARCH */}
-    <div className="relative w-full lg:w-80">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-      <input
-        placeholder="Search crystals..."
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        className="w-full bg-black/40 border border-white/10 rounded-lg py-2 pl-10 pr-4 text-white focus:outline-none focus:border-primary"
-      />
-    </div>
+      {/* SEARCH */}
+      <div className="relative flex-1 min-w-[220px]">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <input
+          placeholder="Search…"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="
+            w-full
+            bg-black/40
+            border border-white/10
+            rounded-lg
+            py-2 pl-9 pr-3
+            text-sm text-white
+            focus:outline-none
+            focus:border-primary
+          "
+        />
+      </div>
 
-    {/* DROPDOWNS */}
-    <div className="flex flex-wrap gap-3 w-full lg:w-auto justify-start lg:justify-end">
-
-      {/* CATEGORY / BRACELETS */}
+      {/* CATEGORY */}
       <select
         value={activeCategory}
         onChange={(e) => setActiveCategory(e.target.value)}
-        className="filter-select"
+        className="filter-select rounded-lg"
       >
-        <option value="all">All Bracelets</option>
-        <option value="wealth">Wealth Bracelets</option>
-        <option value="love">Love Bracelets</option>
-        <option value="protection">Protection Bracelets</option>
-        <option value="health">Health Bracelets</option>
-        <option value="zodiac">Zodiac Bracelets</option>
+        <option value="all">All</option>
+        <option value="wealth">Wealth</option>
+        <option value="love">Love</option>
+        <option value="protection">Protection</option>
+        <option value="health">Health</option>
+        <option value="zodiac">Zodiac</option>
       </select>
 
       {/* SORT */}
       <select
         value={sortBy}
         onChange={(e) => setSortBy(e.target.value)}
-        className="filter-select"
+        className="filter-select rounded-lg"
       >
         <option value="relevance">Relevance</option>
-        <option value="price-low">Price: Low → High</option>
-        <option value="price-high">Price: High → Low</option>
-        <option value="discount">Best Discount</option>
-        <option value="popular">Most Popular</option>
-        <option value="newest">Newest First</option>
+        <option value="price-low">Price ↑</option>
+        <option value="price-high">Price ↓</option>
+        <option value="popular">Popular</option>
+        <option value="newest">Newest</option>
       </select>
 
       {/* PRICE */}
       <select
         value={priceRange}
         onChange={(e) => setPriceRange(e.target.value)}
-        className="filter-select"
+        className="filter-select rounded-lg"
       >
         <option value="all">All Prices</option>
         <option value="under-999">Under ₹999</option>
-        <option value="1000-1999">₹1000 – ₹1999</option>
+        <option value="1000-1999">₹1000–1999</option>
         <option value="2000+">₹2000+</option>
       </select>
 
-      {/* STOCK */}
+      {/* STOCK – ONLY IN / OUT */}
       <select
         value={stockFilter}
         onChange={(e) => setStockFilter(e.target.value)}
-        className="filter-select"
+        className="filter-select rounded-lg"
       >
         <option value="all">All Stock</option>
         <option value="in">In Stock</option>
-        <option value="low">Low Stock</option>
+        <option value="out">Out of Stock</option>
       </select>
 
-      {/* DISCOUNT */}
-      <select
-        value={discountFilter}
-        onChange={(e) => setDiscountFilter(e.target.value)}
-        className="filter-select"
+      {/* CLEAR */}
+      <button
+        onClick={() => {
+          setActiveCategory("all");
+          setSortBy("relevance");
+          setPriceRange("all");
+          setStockFilter("all");
+          setSearchQuery("");
+        }}
+        className="
+          text-xs
+          px-3 py-2
+          rounded-lg
+          border border-white/10
+          text-white/60
+          hover:text-white
+          hover:border-primary/40
+          transition
+          whitespace-nowrap
+        "
       >
-        <option value="all">All Discounts</option>
-        <option value="20">20%+ OFF</option>
-        <option value="40">40%+ OFF</option>
-      </select>
+        Clear
+      </button>
 
     </div>
   </div>
 </div>
+
 
         
 

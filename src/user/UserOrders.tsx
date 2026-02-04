@@ -3,6 +3,10 @@ import { Package } from "lucide-react";
 import { ENV } from "../config/env";
 
 export default function UserOrders() {
+     
+  console.log("🌐 API BASE URL:", ENV.API_BASE_URL);
+
+
     console.log("🔥 UserOrders component mounted");
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -11,6 +15,7 @@ export default function UserOrders() {
   const userData = localStorage.getItem("user");
   const email = userData ? JSON.parse(userData).email : null;
 
+  
   useEffect(() => {
     if (!email) {
       console.log("❌ No email found");
@@ -20,7 +25,7 @@ export default function UserOrders() {
 
     console.log("✅ Fetching orders for:", email);
 
-    fetch(`${ENV.API_BASE_URL}/api/user/orders/my?email=${email}`)
+  fetch(`${ENV.API_BASE_URL}/api/user/orders/my?email=${email}`)
       .then(res => res.json())
       .then(data => {
         console.log("📦 Orders response:", data);
@@ -39,7 +44,7 @@ export default function UserOrders() {
 
   if (orders.length === 0) {
     return (
-      <div className="text-center py-20">
+      <div className="text-center py-20 mt-15">
         <Package className="mx-auto mb-4 text-purple-400" size={48} />
         <p className="text-white/60">No orders found</p>
       </div>
@@ -67,7 +72,7 @@ export default function UserOrders() {
           </div>
 
           <div className="font-semibold text-primary mt-2">
-            ₹{order.amount}
+            ₹{order.amount || order.totalAmount}
           </div>
 
           <div className="text-xs text-white/40 mt-1">
@@ -75,6 +80,8 @@ export default function UserOrders() {
           </div>
         </div>
       ))}
+      
     </div>
+    
   );
 }

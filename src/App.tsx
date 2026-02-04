@@ -27,6 +27,7 @@ import Profile from "./user/Profile";
 import Wishlist from "./user/Wishlist";
 import New from "./admin/new"
 import Cart from "./pages/cart"
+import Checkout from "./pages/checkout";
 
 
 function Router() {
@@ -59,7 +60,7 @@ function Router() {
           <Route path="/profile" component={Profile} />
           <Route path="/wishlist" component={Wishlist} />
            <Route path="/cart" component={Cart} />
-
+             <Route path="/checkout" component={Checkout} />
         <Route component={NotFound} />
       </Switch>
     </>

@@ -1,117 +1,129 @@
 import React from "react";
 
-export default function PurpleLightDashboard() {
+export default function PremiumDashboard() {
   return (
-    <div className="min-h-screen bg-[#FAFAFB] text-[#1F2937] flex">
+    <div className="min-h-screen flex bg-gradient-to-br from-[#F8FAFF] via-[#F6F7FF] to-[#FBFBFD] text-[#0F172A]">
 
-      {/* SIDEBAR */}
-      <aside className="w-64 bg-white shadow-sm px-6 py-8">
-        <h1 className="text-lg font-semibold mb-10 text-[#7A3E4D]">
-          Logopipsum
-        </h1>
+      {/* ========== SIDEBAR ========== */}
+      <aside className="w-64 bg-gradient-to-b from-[#EEF2FF] via-[#F5F3FF] to-white border-r border-[#E0E7FF] flex flex-col px-6 py-6">
 
-        <p className="text-xs uppercase tracking-widest text-[#6B7280] mb-4">
+        {/* LOGO */}
+        <div className="flex items-center gap-2 mb-10 font-semibold text-lg text-[#4338CA]">
+          ⚡ Logopipsum
+        </div>
+
+        {/* MENU */}
+        <p className="text-xs uppercase tracking-widest text-[#818CF8] mb-3">
           Menu
         </p>
 
         <nav className="space-y-1 text-sm">
-          <div className="px-3 py-2 rounded-md text-[#6B7280] hover:bg-[#F4E6EA]">
-            Overview
-          </div>
+          <SidebarItem label="Overview" />
+          <SidebarItem label="Test Cases" />
+          <SidebarItem label="Test Suites" active />
+          <SidebarItem label="Test Packages" />
+          <SidebarItem label="Execution" />
+          <SidebarItem label="Results" />
+        </nav>
 
-          <div className="px-3 py-2 rounded-md bg-[#F4E6EA] text-[#7A3E4D] font-medium">
-            Test Cases
-          </div>
+        {/* DIVIDER */}
+        <div className="my-6 border-t border-[#E0E7FF]" />
 
-          <div className="px-3 py-2 rounded-md text-[#6B7280] hover:bg-[#F4E6EA]">
-            Test Suites
-          </div>
+        {/* PROJECT */}
+        <p className="text-xs uppercase tracking-widest text-[#818CF8] mb-3">
+          Project
+        </p>
 
-          <div className="px-3 py-2 rounded-md text-[#6B7280] hover:bg-[#F4E6EA]">
-            Execution
-          </div>
-
-          <div className="px-3 py-2 rounded-md text-[#6B7280] hover:bg-[#F4E6EA]">
-            Results
-          </div>
+        <nav className="space-y-1 text-sm">
+          <SidebarItem label="Flow Settings" />
+          <SidebarItem label="Settings" />
         </nav>
       </aside>
 
-      {/* MAIN */}
-      <main className="flex-1">
+      {/* ========== MAIN AREA ========== */}
+      <main className="flex-1 flex flex-col">
 
         {/* HEADER */}
-        <header className="flex justify-between items-center px-10 py-5 bg-white shadow-sm">
-          <span className="text-sm text-[#6B7280]">
-            Dashboard / Profile Creation
-          </span>
+        <header className="h-16 bg-white/80 backdrop-blur border-b border-[#E2E8F0] px-8 flex items-center justify-between">
+          <div className="text-sm text-[#64748B]">
+            Dashboard <span className="mx-1">›</span> Profile Creation
+          </div>
 
           <div className="flex items-center gap-4">
-            {/* AVATAR */}
-            <div className="w-10 h-10 rounded-full bg-[#F4E6EA] flex items-center justify-center">
-              <span className="font-semibold text-[#7A3E4D]">
-                SM
-              </span>
+            <span className="text-sm text-[#64748B]">Support</span>
+            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[#EEF2FF] to-[#E0E7FF] flex items-center justify-center font-semibold text-[#4338CA]">
+              LR
             </div>
           </div>
         </header>
 
         {/* CONTENT */}
-        <div className="px-10 py-8">
-          <h2 className="text-2xl font-semibold mb-8">
-            Load objects
-          </h2>
+        <div className="p-8 space-y-6">
 
-          <div className="grid grid-cols-12 gap-8">
+          {/* TITLE BAR */}
+          <div className="flex justify-between items-center">
+            <h1 className="text-xl font-semibold">Load objects</h1>
 
-            {/* LEFT CARD */}
-            <div className="col-span-4 bg-white rounded-xl shadow p-6">
-              <p className="font-medium mb-6 text-sm">
-                Available objects
-              </p>
+            <div className="flex gap-3">
+              <select className="border border-[#E2E8F0] rounded-lg px-4 py-2 text-sm bg-white">
+                <option>Sales</option>
+              </select>
 
-              {["Account", "Bike service", "Campaign", "Contact"].map(
-                (item, i) => (
-                  <div
-                    key={item}
-                    className="flex justify-between items-center py-3 border-b last:border-none border-[#E5E7EB] text-sm"
-                  >
-                    <span className="text-[#6B7280]">{item}</span>
-                    <input
-                      type="checkbox"
-                      defaultChecked={i < 3}
-                      className="accent-[#7A3E4D]"
-                    />
-                  </div>
-                )
-              )}
+              <button className="bg-gradient-to-r from-[#4338CA] to-[#6366F1] text-white px-4 py-2 rounded-lg text-sm shadow hover:opacity-90">
+                Generate Testcases
+              </button>
+            </div>
+          </div>
+
+          {/* MAIN CARD */}
+          <div className="bg-white/90 backdrop-blur border border-[#E2E8F0] rounded-2xl shadow-sm grid grid-cols-12 overflow-hidden">
+
+            {/* LEFT PANEL */}
+            <div className="col-span-4 border-r border-[#E2E8F0] p-6">
+              <p className="font-medium mb-4 text-sm">Available objects</p>
+
+              <div className="space-y-2">
+                {["Account", "Bike Service", "Campaign", "Contact"].map(
+                  (item, i) => (
+                    <div
+                      key={item}
+                      className={`flex justify-between items-center px-3 py-2 rounded-lg text-sm transition ${
+                        i === 0
+                          ? "bg-gradient-to-r from-[#EEF2FF] to-[#E0E7FF] text-[#4338CA]"
+                          : "hover:bg-[#F8FAFC]"
+                      }`}
+                    >
+                      <span>{item}</span>
+                      <input
+                        type="checkbox"
+                        defaultChecked={i < 2}
+                        className="accent-[#4338CA]"
+                      />
+                    </div>
+                  )
+                )}
+              </div>
             </div>
 
-            {/* RIGHT CARD */}
-            <div className="col-span-8 bg-white rounded-xl shadow p-7">
-              <div className="flex justify-between items-start mb-6">
+            {/* RIGHT PANEL */}
+            <div className="col-span-8 p-6">
+              <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h3 className="font-semibold text-sm">
-                    Account
-                  </h3>
-                  <p className="text-xs text-[#6B7280]">
+                  <p className="font-medium">Account</p>
+                  <p className="text-xs text-[#64748B]">
                     2 / 25 fields selected
                   </p>
                 </div>
 
                 <div className="flex gap-2">
-                  <button className="px-4 py-1.5 rounded-md text-sm border border-[#EAD6DD] text-[#7A3E4D] hover:bg-[#F4E6EA]">
-                    Field mapping
-                  </button>
-                  <button className="px-4 py-1.5 rounded-md text-sm border border-[#EAD6DD] text-[#7A3E4D] hover:bg-[#F4E6EA]">
-                    Tab Design
-                  </button>
+                  <ActionBtn label="Field mapping" />
+                  <ActionBtn label="Tab Design" />
                 </div>
               </div>
 
               {/* TABLE */}
-              <div className="rounded-lg overflow-hidden">
-                <div className="grid grid-cols-12 bg-[#FAF7F8] px-5 py-3 text-xs uppercase tracking-wide text-[#6B7280]">
+              <div className="border border-[#E2E8F0] rounded-xl overflow-hidden">
+                <div className="grid grid-cols-12 bg-gradient-to-r from-[#F1F5FF] to-[#EEF2FF] px-5 py-3 text-xs uppercase text-[#64748B]">
                   <div className="col-span-5">Field name</div>
                   <div className="col-span-7">Display name</div>
                 </div>
@@ -124,17 +136,17 @@ export default function PurpleLightDashboard() {
                 ].map(([a, b, c], i) => (
                   <div
                     key={i}
-                    className="grid grid-cols-12 px-5 py-4 text-sm border-b last:border-none border-[#E5E7EB] hover:bg-[#FAFAFB]"
+                    className="grid grid-cols-12 px-5 py-4 text-sm border-t border-[#E2E8F0] hover:bg-[#F8FAFC]"
                   >
                     <div className="col-span-5 flex gap-3 items-center">
                       <input
                         type="checkbox"
                         defaultChecked={c}
-                        className="accent-[#7A3E4D]"
+                        className="accent-[#4338CA]"
                       />
                       <span>{a}</span>
                     </div>
-                    <div className="col-span-7 text-[#6B7280]">
+                    <div className="col-span-7 text-[#64748B]">
                       {b}
                     </div>
                   </div>
@@ -146,5 +158,29 @@ export default function PurpleLightDashboard() {
         </div>
       </main>
     </div>
+  );
+}
+
+/* ===== Reusable Components ===== */
+
+function SidebarItem({ label, active }) {
+  return (
+    <div
+      className={`px-3 py-2 rounded-lg cursor-pointer transition ${
+        active
+          ? "bg-gradient-to-r from-[#4338CA] to-[#6366F1] text-white shadow"
+          : "text-[#475569] hover:bg-[#EEF2FF]"
+      }`}
+    >
+      {label}
+    </div>
+  );
+}
+
+function ActionBtn({ label }) {
+  return (
+    <button className="px-4 py-1.5 rounded-lg text-sm border border-[#E0E7FF] text-[#4338CA] bg-white hover:bg-[#EEF2FF] transition">
+      {label}
+    </button>
   );
 }

@@ -43,10 +43,10 @@ export default function Footer() {
             </p>
 
             <div className="flex gap-4">
-              <a href="#" className="text-white/60 hover:text-primary">
+              <a href="https://www.instagram.com/astrocharm_" className="text-white/60 hover:text-primary">
                 <Instagram />
               </a>
-              <a href="#" className="text-white/60 hover:text-primary">
+              <a href="https://www.facebook.com/people/Astro-Charm/61585223916496/?ref=pl_edit_ig_profile_ac" className="text-white/60 hover:text-primary">
                 <Facebook />
               </a>
             </div>

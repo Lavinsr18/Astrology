@@ -141,6 +141,7 @@ export default function CartPage() {
           Checkout
         </Link>
       </div>
+      
       </div>
   );
 }
